@@ -1,37 +1,37 @@
 {
-  "publisher": "simonhe",
+	"publisher": "simonhe",
 	"name": "parameter-hints",
 	"displayName": "Parameter Hints",
 	"description": "Automatic parameter hints",
-	"version": "0.0.0",
-  "license": "MIT",
+	"version": "0.0.1",
+	"license": "MIT",
 	"icon": "icon.png",
 	"files": [
-    "dist"
-  ],
-  "funding": "https://github.com/sponsors/Simon-He95",
+		"dist"
+	],
+	"funding": "https://github.com/sponsors/Simon-He95",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Simon-He95/VSCode-Parameter-Hints.git"
 	},
 	"bugs": {
-    "url": "https://github.com/Simon-He95/VSCode-Parameter-Hints/issues"
-  },
+		"url": "https://github.com/Simon-He95/VSCode-Parameter-Hints/issues"
+	},
 	"sponsor": {
-    "url": "https://github.com/Simon-He95/sponsor"
-  },
+		"url": "https://github.com/Simon-He95/sponsor"
+	},
 	"keywords": [
-    "parameter-hints"
-  ],
+		"parameter-hints"
+	],
 	"scripts": {
 		"package": "npx vsce package",
-    "build": "tsup src/index.js --external vscode",
+		"build": "tsup src/index.js --external vscode",
 		"publish": "vsce publish --no-dependencies",
-    "release": "bumpp && npm run publish",
+		"release": "bumpp && npm run publish",
 		"lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 --cache",
-    "lint:fix": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 --cache --fix",
+		"lint:fix": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 --cache --fix",
 		"compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+		"watch": "tsc -watch -p ./"
 	},
 	"engines": {
 		"vscode": "^1.77.0"
@@ -123,16 +123,16 @@
 	},
 	"main": "./dist/index.js",
 	"devDependencies": {
-    "@antfu/eslint-config": "^0.38.4",
+		"@antfu/eslint-config": "^0.38.4",
 		"@types/node": "^13.13.21",
 		"@types/vscode": "^1.77.0",
 		"eslint": "^6.8.0",
 		"typescript": "^4.8.4",
-    "tsup": "^6.7.0",
-    "bumpp": "^9.1.0",
+		"tsup": "^6.7.0",
+		"bumpp": "^9.1.0",
 		"webpack-cli": "^3.3.12",
 		"dash-ast": "^2.0.1",
 		"php-parser": "^3.0.1",
-    "vsce": "^2.15.0"
+		"vsce": "^2.15.0"
 	}
 }
