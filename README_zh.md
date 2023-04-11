@@ -44,7 +44,7 @@
 The background and foreground colors can be customized under 
 `workbench.colorCustomizations` like this:
 
-```js
+```typescript
 // settings.json
 {
     // ...

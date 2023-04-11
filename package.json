@@ -1,138 +1,138 @@
 {
-	"publisher": "simonhe",
-	"name": "parameter-hints-next",
-	"displayName": "Parameter Hints Next",
-	"description": "Automatic parameter hints",
-	"version": "0.0.3",
-	"license": "MIT",
-	"icon": "icon.png",
-	"files": [
-		"dist"
-	],
-	"funding": "https://github.com/sponsors/Simon-He95",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Simon-He95/VSCode-Parameter-Hints.git"
-	},
-	"bugs": {
-		"url": "https://github.com/Simon-He95/VSCode-Parameter-Hints/issues"
-	},
-	"sponsor": {
-		"url": "https://github.com/Simon-He95/sponsor"
-	},
-	"keywords": [
-		"parameter-hints"
-	],
-	"scripts": {
-		"package": "vsce package",
-		"build": "tsup src/index.js --external vscode",
-		"publish": "vsce publish --no-dependencies",
-		"release": "bumpp && npm run publish",
-		"lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 --cache",
-		"lint:fix": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 --cache --fix",
-		"compile": "tsc -p ./",
-		"watch": "node ./src/index.js -watch"
-	},
-	"engines": {
-		"vscode": "^1.77.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"onStartupFinished"
-	],
-	"contributes": {
-		"commands": [
-			{
-				"command": "parameterHints.toggle",
-				"title": "Parameter Hints: Hide / Show Hints"
-			}
-		],
-		"configuration": [
-			{
-				"title": "Parameter Hints",
-				"properties": {
-					"parameterHints.enabled": {
-						"type": "boolean",
-						"description": "Enable Parameter Hints",
-						"default": true
-					},
-					"parameterHints.languages": {
-						"type": "array",
-						"description": "Enable Languages",
-						"default": [
-							"php",
-							"vue",
-							"javascript",
-							"typescript",
-							"javascriptreact",
-							"typescriptreact"
-						],
-						"enum": [
-							"php",
-							"vue",
-							"javascript",
-							"typescript",
-							"javascriptreact",
-							"typescriptreact"
-						]
-					},
-					"parameterHints.hintingType": {
-						"type": "string",
-						"default": "variableAndType",
-						"enum": [
-							"typeOnly",
-							"variableAndType",
-							"variableOnly"
-						]
-					},
-					"parameterHints.padding": {
-						"type": "string",
-						"description": "Padding Vertical",
-						"default": "1 4"
-					},
-					"parameterHints.margin": {
-						"type": "string",
-						"description": "Margin",
-						"default": "0 1"
-					}
-				}
-			}
-		],
-		"colors": [
-			{
-				"id": "parameterHints.hintForeground",
-				"description": "Specifies the foreground color for the hints",
-				"defaults": {
-					"dark": "#FFFFFF88",
-					"light": "#00000088",
-					"highContrast": "#FFFFFF88"
-				}
-			},
-			{
-				"id": "parameterHints.hintBackground",
-				"description": "Specifies the background color for the hints",
-				"defaults": {
-					"dark": "#11111188",
-					"light": "#eeeeee88",
-					"highContrast": "#33333388"
-				}
-			}
-		]
-	},
-	"main": "./dist/index.js",
-	"devDependencies": {
-		"@antfu/eslint-config": "^0.38.4",
-		"@types/node": "^13.13.21",
-		"@types/vscode": "^1.77.0",
-		"eslint": "^8.37.0",
-		"typescript": "^4.8.4",
-		"tsup": "^6.7.0",
-		"bumpp": "^9.1.0",
-		"webpack-cli": "^3.3.12",
-		"dash-ast": "^2.0.1",
-		"php-parser": "^3.0.1",
-		"vsce": "^2.15.0"
-	}
+  "publisher": "simonhe",
+  "name": "parameter-hints-next",
+  "displayName": "Parameter Hints Next",
+  "version": "0.0.3",
+  "description": "Automatic parameter hints",
+  "license": "MIT",
+  "funding": "https://github.com/sponsors/Simon-He95",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Simon-He95/VSCode-Parameter-Hints.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Simon-He95/VSCode-Parameter-Hints/issues"
+  },
+  "keywords": [
+    "parameter-hints"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/index.js",
+  "icon": "icon.png",
+  "files": [
+    "dist"
+  ],
+  "sponsor": {
+    "url": "https://github.com/Simon-He95/sponsor"
+  },
+  "engines": {
+    "vscode": "^1.77.0"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "parameterHints.toggle",
+        "title": "Parameter Hints: Hide / Show Hints"
+      }
+    ],
+    "configuration": [
+      {
+        "title": "Parameter Hints",
+        "properties": {
+          "parameterHints.enabled": {
+            "type": "boolean",
+            "description": "Enable Parameter Hints",
+            "default": true
+          },
+          "parameterHints.languages": {
+            "type": "array",
+            "description": "Enable Languages",
+            "default": [
+              "php",
+              "vue",
+              "javascript",
+              "typescript",
+              "javascriptreact",
+              "typescriptreact"
+            ],
+            "enum": [
+              "php",
+              "vue",
+              "javascript",
+              "typescript",
+              "javascriptreact",
+              "typescriptreact"
+            ]
+          },
+          "parameterHints.hintingType": {
+            "type": "string",
+            "default": "variableAndType",
+            "enum": [
+              "typeOnly",
+              "variableAndType",
+              "variableOnly"
+            ]
+          },
+          "parameterHints.padding": {
+            "type": "string",
+            "description": "Padding Vertical",
+            "default": "1 4"
+          },
+          "parameterHints.margin": {
+            "type": "string",
+            "description": "Margin",
+            "default": "0 1"
+          }
+        }
+      }
+    ],
+    "colors": [
+      {
+        "id": "parameterHints.hintForeground",
+        "description": "Specifies the foreground color for the hints",
+        "defaults": {
+          "dark": "#FFFFFF88",
+          "light": "#00000088",
+          "highContrast": "#FFFFFF88"
+        }
+      },
+      {
+        "id": "parameterHints.hintBackground",
+        "description": "Specifies the background color for the hints",
+        "defaults": {
+          "dark": "#11111188",
+          "light": "#eeeeee88",
+          "highContrast": "#33333388"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "package": "vsce package",
+    "build": "tsup src/index.js --external vscode",
+    "publish": "vsce publish --no-dependencies",
+    "release": "bumpp && npm run publish",
+    "lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 --cache",
+    "lint:fix": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 --cache --fix",
+    "compile": "tsc -p ./",
+    "watch": "node ./src/index.js -watch"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.38.4",
+    "@types/node": "^13.13.21",
+    "@types/vscode": "^1.77.0",
+    "bumpp": "^9.1.0",
+    "dash-ast": "^2.0.1",
+    "eslint": "^8.37.0",
+    "php-parser": "^3.0.1",
+    "tsup": "^6.7.0",
+    "typescript": "^4.8.4",
+    "vsce": "^2.15.0",
+    "webpack-cli": "^3.3.12"
+  }
 }

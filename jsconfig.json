@@ -1,13 +1,13 @@
 {
-	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es6",
-		"checkJs": true,
-		"lib": [
-			"es2015"
-		]
-	},
-	"exclude": [
-		"node_modules"
-	]
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "checkJs": true,
+    "lib": [
+      "es2015"
+    ]
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }

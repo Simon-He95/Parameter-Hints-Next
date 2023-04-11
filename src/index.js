@@ -1,12 +1,12 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-const vscode = require('vscode');
-const { runner } = require('./language/generic/runner');
-const { runner: phpRunner } = require('./language/php/runner');
-const { runner: typescriptRunner } = require('./language/typescript/runner');
-const ts = require('typescript');
+const vscode = require('vscode')
+const ts = require('typescript')
+const { runner } = require('./language/generic/runner')
+const { runner: phpRunner } = require('./language/php/runner')
+const { runner: typescriptRunner } = require('./language/typescript/runner')
 
-const hintDecorationType = vscode.window.createTextEditorDecorationType({});
+const hintDecorationType = vscode.window.createTextEditorDecorationType({})
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 
@@ -15,99 +15,100 @@ const hintDecorationType = vscode.window.createTextEditorDecorationType({});
  */
 
 export function activate(context) {
-	let activeEditor = vscode.window.activeTextEditor;
-	let currentRunner = null;
+  let activeEditor = vscode.window.activeTextEditor
+  let currentRunner = null
 
-	const messageHeader = 'Parameter Hints: ';
-	const hideMessageAfterMs = 3000;
-	const isEnabled = vscode.workspace.getConfiguration("parameterHints").get(
-		"enabled",
-	);
-	const languagesEnabled = vscode.workspace.getConfiguration("parameterHints").get(
-		"languages",
-	);
+  const messageHeader = 'Parameter Hints: '
+  const hideMessageAfterMs = 3000
+  const isEnabled = vscode.workspace.getConfiguration('parameterHints').get(
+    'enabled',
+  )
+  const languagesEnabled = vscode.workspace.getConfiguration('parameterHints').get(
+    'languages',
+  )
 
-	let timeout = null;
+  let timeout = null
 
-	const trigger = (identifier, editor, force, time = 100) => {
-		const languageId = editor.document.languageId
-		console.log(!!editor)
-		if (currentRunner && !currentRunner.state.done) {
-			currentRunner.reject();
-		}
-		if (timeout) {
-			clearTimeout(timeout);
-		}
-		const showHints = hints => {
-			if (hints === false || !isEnabled)
-				return
-			editor.setDecorations(
-				hintDecorationType,
-				hints.length
-					? hints
-					: [new vscode.Range(0, 0, 0, 0)]);
-		}
-		timeout = setTimeout(() => {
-			if (!isEnabled && !force)
-				return
-			if (languagesEnabled.includes("php") && languageId === 'php') {
-				currentRunner = runner(phpRunner, editor, showHints)
-			} else if (languagesEnabled.includes("typescript") && languageId === 'typescript') {
-				currentRunner = runner(typescriptRunner, editor, showHints, { language: ts.ScriptKind.TS })
-			} else if (languagesEnabled.includes("typescriptreact") && languageId === 'typescriptreact') {
-				currentRunner = runner(typescriptRunner, editor, showHints, { language: ts.ScriptKind.TSX })
-			} else if (languagesEnabled.includes("javascript") && languageId === 'javascript') {
-				currentRunner = runner(typescriptRunner, editor, showHints, { language: ts.ScriptKind.JS })
-			} else if (languagesEnabled.includes("javascriptreact") && languageId === 'javascriptreact') {
-				currentRunner = runner(typescriptRunner, editor, showHints, { language: ts.ScriptKind.JSX })
-			} else if (languagesEnabled.includes("vue") && languageId === 'vue') {
-				currentRunner = runner(typescriptRunner, editor, showHints, { language: ts.ScriptKind.TS })
-			}
-		}, time);
-	}
-	const clear = (editor) => {
-		if (timeout) {
-			clearTimeout(timeout);
-		}
-		currentRunner && !currentRunner.state.done && currentRunner.reject();
-		editor && editor.setDecorations(hintDecorationType, [new vscode.Range(0, 0, 0, 0)]);
-	}
+  const trigger = (identifier, editor, force, time = 100) => {
+    const languageId = editor.document.languageId
+    if (currentRunner && !currentRunner.state.done)
+      currentRunner.reject()
 
+    if (timeout)
+      clearTimeout(timeout)
 
-	vscode.commands.registerCommand('parameterHints.toggle', () => {
-		const currentState = vscode.workspace.getConfiguration('parameterHints').get('enabled');
-		let message = `${messageHeader} Hints ${currentState ? 'disabled' : 'enabled'}`;
+    const showHints = (hints) => {
+      if (hints === false || !isEnabled)
+        return
+      editor.setDecorations(
+        hintDecorationType,
+        hints.length
+          ? hints
+          : [new vscode.Range(0, 0, 0, 0)])
+    }
+    timeout = setTimeout(() => {
+      if (!isEnabled && !force)
+        return
+      if (languagesEnabled.includes('php') && languageId === 'php')
+        currentRunner = runner(phpRunner, editor, showHints)
 
-		vscode.workspace.getConfiguration('parameterHints').update('enabled', !currentState, true);
-		if (currentState) {
-			clear(activeEditor)
-		} else {
-			trigger('restart', activeEditor, true)
-		}
-		vscode.window.setStatusBarMessage(message, hideMessageAfterMs);
-	})
+      else if (languagesEnabled.includes('typescript') && languageId === 'typescript')
+        currentRunner = runner(typescriptRunner, editor, showHints, { language: ts.ScriptKind.TS })
 
-	trigger('on start', activeEditor, false, 100);
+      else if (languagesEnabled.includes('typescriptreact') && languageId === 'typescriptreact')
+        currentRunner = runner(typescriptRunner, editor, showHints, { language: ts.ScriptKind.TSX })
 
-	context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(editor => {
-		activeEditor = editor;
-		if (activeEditor)
-			trigger('change_active_text_editor', activeEditor, false, 100);
-	}));
+      else if (languagesEnabled.includes('javascript') && languageId === 'javascript')
+        currentRunner = runner(typescriptRunner, editor, showHints, { language: ts.ScriptKind.JS })
 
-	context.subscriptions.push(vscode.workspace.onDidChangeTextDocument(event => {
-		if (event.contentChanges.length) {
-			trigger('text edited', activeEditor, false, 300);
-		}
-	}))
+      else if (languagesEnabled.includes('javascriptreact') && languageId === 'javascriptreact')
+        currentRunner = runner(typescriptRunner, editor, showHints, { language: ts.ScriptKind.JSX })
 
-	context.subscriptions.push(vscode.window.onDidChangeTextEditorVisibleRanges(event => {
-		activeEditor = event.textEditor;
-		if (activeEditor)
-			trigger('scroll', activeEditor, false, 100);
-	}))
+      else if (languagesEnabled.includes('vue') && languageId === 'vue')
+        currentRunner = runner(typescriptRunner, editor, showHints, { language: ts.ScriptKind.TS })
+    }, time)
+  }
+  const clear = (editor) => {
+    if (timeout)
+      clearTimeout(timeout)
+
+    currentRunner && !currentRunner.state.done && currentRunner.reject()
+    editor && editor.setDecorations(hintDecorationType, [new vscode.Range(0, 0, 0, 0)])
+  }
+
+  vscode.commands.registerCommand('parameterHints.toggle', () => {
+    const currentState = vscode.workspace.getConfiguration('parameterHints').get('enabled')
+    const message = `${messageHeader} Hints ${currentState ? 'disabled' : 'enabled'}`
+
+    vscode.workspace.getConfiguration('parameterHints').update('enabled', !currentState, true)
+    if (currentState)
+      clear(activeEditor)
+
+    else
+      trigger('restart', activeEditor, true)
+
+    vscode.window.setStatusBarMessage(message, hideMessageAfterMs)
+  })
+
+  trigger('on start', activeEditor, false, 100)
+
+  context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor((editor) => {
+    activeEditor = editor
+    if (activeEditor)
+      trigger('change_active_text_editor', activeEditor, false, 100)
+  }))
+
+  context.subscriptions.push(vscode.workspace.onDidChangeTextDocument((event) => {
+    if (event.contentChanges.length)
+      trigger('text edited', activeEditor, false, 300)
+  }))
+
+  context.subscriptions.push(vscode.window.onDidChangeTextEditorVisibleRanges((event) => {
+    activeEditor = event.textEditor
+    if (activeEditor)
+      trigger('scroll', activeEditor, false, 100)
+  }))
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() { }
-
