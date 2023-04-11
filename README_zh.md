@@ -3,7 +3,7 @@
 </p>
 <p align="center"> <a href="./README.md">English</a> | 简体中文</p>
 
-**Warning:** 由于[DominicVonk/VSCode-Parameter-Hints](https://github.com/DominicVonk/VSCode-Parameter-Hints)不再继续维护了，我决定fork下来继续维护
+>**⚠️注意:** 由于[DominicVonk/VSCode-Parameter-Hints](https://github.com/DominicVonk/VSCode-Parameter-Hints)不再继续维护了，我决定fork下来继续维护
 
 ![Preview](preview.png)
 
