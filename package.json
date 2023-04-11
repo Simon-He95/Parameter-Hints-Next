@@ -1,9 +1,9 @@
 {
 	"publisher": "simonhe",
 	"name": "parameter-hints-next",
-	"displayName": "Parameter Hints",
+	"displayName": "Parameter Hints Next",
 	"description": "Automatic parameter hints",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"license": "MIT",
 	"icon": "icon.png",
 	"files": [
