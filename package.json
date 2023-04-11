@@ -1,14 +1,28 @@
 {
+  "publisher": "simonhe",
 	"name": "parameter-hints",
 	"displayName": "Parameter Hints",
 	"description": "Automatic parameter hints",
 	"version": "0.0.0",
-	"preview": true,
+  "license": "MIT",
 	"icon": "icon.png",
+	"files": [
+    "dist"
+  ],
+  "funding": "https://github.com/sponsors/Simon-He95",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/DominicVonk/VSCode-Parameter-Hints.git"
+		"url": "https://github.com/Simon-He95/VSCode-Parameter-Hints.git"
 	},
+	"bugs": {
+    "url": "https://github.com/Simon-He95/VSCode-Parameter-Hints/issues"
+  },
+	"sponsor": {
+    "url": "https://github.com/Simon-He95/sponsor"
+  },
+	"keywords": [
+    "parameter-hints"
+  ],
 	"scripts": {
 		"package": "npx vsce package",
     "build": "tsup src/index.js --external vscode",
@@ -22,7 +36,6 @@
 	"engines": {
 		"vscode": "^1.77.0"
 	},
-  "publisher": "simonhe",
 	"categories": [
 		"Other"
 	],
