@@ -2,7 +2,7 @@
 	"name": "parameter-hints",
 	"displayName": "Parameter Hints",
 	"description": "Automatic parameter hints",
-	"version": "0.2.7",
+	"version": "0.0.0",
 	"preview": true,
 	"icon": "icon.png",
 	"repository": {
@@ -11,16 +11,18 @@
 	},
 	"scripts": {
 		"package": "npx vsce package",
-		"publish": "npx vsce publish && npx ovsx publish",
-		"vscode:prepublish": "webpack --mode production",
-		"compile": "webpack --mode none",
-		"watch": "webpack --mode none --watch",
-		"test-compile": "npm run compile"
+    "build": "tsup src/index.js --external vscode",
+		"publish": "vsce publish --no-dependencies",
+    "release": "bumpp && npm run publish",
+		"lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 --cache",
+    "lint:fix": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 --cache --fix",
+		"compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
 	},
 	"engines": {
-		"vscode": "^1.49.0"
+		"vscode": "^1.77.0"
 	},
-	"publisher": "DominicVonk",
+  "publisher": "simonhe",
 	"categories": [
 		"Other"
 	],
@@ -48,6 +50,7 @@
 						"description": "Enable Languages",
 						"default": [
 							"php",
+							"vue",
 							"javascript",
 							"typescript",
 							"javascriptreact",
@@ -55,6 +58,7 @@
 						],
 						"enum": [
 							"php",
+							"vue",
 							"javascript",
 							"typescript",
 							"javascriptreact",
@@ -104,22 +108,18 @@
 			}
 		]
 	},
-	"main": "./dist/extension.js",
+	"main": "./dist/index.js",
 	"devDependencies": {
-		"@types/glob": "^7.1.1",
-		"@types/mocha": "^7.0.2",
+    "@antfu/eslint-config": "^0.38.4",
 		"@types/node": "^13.13.21",
-		"@types/vscode": "^1.49.0",
+		"@types/vscode": "^1.77.0",
 		"eslint": "^6.8.0",
-		"glob": "^7.1.6",
-		"mocha": "^7.1.2",
-		"typescript": "^4.1.0-dev.20200930",
-		"vscode-test": "^1.4.0",
-		"webpack": "^4.44.2",
-		"webpack-cli": "^3.3.12"
-	},
-	"dependencies": {
+		"typescript": "^4.8.4",
+    "tsup": "^6.7.0",
+    "bumpp": "^9.1.0",
+		"webpack-cli": "^3.3.12",
 		"dash-ast": "^2.0.1",
-		"php-parser": "^3.0.1"
+		"php-parser": "^3.0.1",
+    "vsce": "^2.15.0"
 	}
 }

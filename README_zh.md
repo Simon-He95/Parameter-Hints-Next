@@ -1,18 +1,18 @@
 <p align="center">
 <img height="200" src="./assets/kv.png" alt="Parameter-Hints">
 </p>
-<p align="center">English | <a href="./README_zh.md">简体中文</a></p>
+<p align="center"> <a href="./README.md">English</a> | 简体中文</p>
 
-**Warning:** Since [DominicVonk/VSCode-Parameter-Hints](https://github.com/DominicVonk/VSCode-Parameter-Hints) is not being maintained, I decided to fork it down and continue to maintain it
+**Warning:** 由于[DominicVonk/VSCode-Parameter-Hints](https://github.com/DominicVonk/VSCode-Parameter-Hints)不再继续维护了，我决定fork下来继续维护
 
 ![Preview](preview.png)
 
-Shows the parameter name of the called function
+显示被调用函数的参数名称
 
 &nbsp;
 &nbsp; 
 
-## Supported languages *
+## 支持的语言 *
 - Javascript
 - Javascript React
 - Typescript
@@ -39,7 +39,7 @@ Shows the parameter name of the called function
 &nbsp;
 &nbsp;
 
-## Colors
+## 颜色
 
 The background and foreground colors can be customized under 
 `workbench.colorCustomizations` like this:
@@ -63,7 +63,7 @@ The background and foreground colors can be customized under
 &nbsp;
 &nbsp;
 
-## Commands
+## 指令
 
 |Name|Description|
 ---|---
@@ -79,7 +79,7 @@ The background and foreground colors can be customized under
 
 ## :coffee:
 
-[buy me a cup of coffee](https://github.com/Simon-He95/sponsor)
+[请我喝一杯咖啡](https://github.com/Simon-He95/sponsor)
 
 ## License
 

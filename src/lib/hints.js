@@ -46,6 +46,7 @@ class Hints {
         return paddings.join('px ') + 'px';
     }
     static paramHint(message, range) {
+        // style
         return {
             range,
             renderOptions: {

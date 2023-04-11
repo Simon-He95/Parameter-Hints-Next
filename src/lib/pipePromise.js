@@ -48,7 +48,7 @@ function pipe(action, condition, previousPromise, broken = false) {
 module.exports.promisable = function promisable(action, condition) {
     let next = null;
     let interval;
-    let promise = cancellablePromise(async (resolve, reject, state) => {
+    const promise = cancellablePromise(async (resolve, reject, state) => {
         try {
             let output = await action(state);
             if (!output) {
@@ -95,7 +95,7 @@ module.exports.promisable = function promisable(action, condition) {
 
 module.exports.promisableOne = function promisableOne(action, condition) {
     let interval;
-    let promise = cancellablePromise(async (resolve, reject, state) => {
+    const promise = cancellablePromise(async (resolve, reject, state) => {
         try {
             let output = await action(state);
             resolve(output);

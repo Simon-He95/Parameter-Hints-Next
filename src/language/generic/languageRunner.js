@@ -3,44 +3,37 @@ const { promiseList } = require("../../lib/promiseList");
 const HintList = require("./hintList");
 
 module.exports = async (state, pipeline, editor, parser, after, providers, parserOptions = {}) => {
-    let text = editor.document.getText();
-    let positionOf = getPositionOfFrom(editor);
-    let nodes = parser(text, parserOptions);
+    const text = editor.document.getText();
+    const positionOf = getPositionOfFrom(editor);
+    const nodes = parser(text, parserOptions);
     const runner = async () => {
-        let hintList = new HintList(positionOf, editor);
-        let promises = promiseList();
-        for (let node of nodes) {
-            if (hintList.nodeVisible(node)) {
-                let pipes = pipeline(async () => {
-                    let provider = await providers[0](editor, node, positionOf);
-                    if (provider && provider.length) {
-                        provider.forEach(hint => {
-                            hintList.addHint(hint);
-                        })
+        const hintList = new HintList(positionOf, editor);
+        const promises = promiseList();
+        for (const node of nodes) {
+            if (!hintList.nodeVisible(node))
+                continue
+            const pipes = pipeline(async () => {
+                const provider = await providers[0](editor, node, positionOf);
+                if (!provider || !provider.length)
+                    return false;
+
+                provider.forEach(hint => hintList.addHint(hint))
+                return true;
+            });
+            for (let i = 1; i < providers.length; i++) {
+                pipes.pipe(
+                    async () => {
+                        const provider = await providers[i](editor, node, positionOf);
+                        if (!provider || !provider.length)
+                            return false;
+                        provider.forEach(hint => hintList.addHint(hint))
                         return true;
                     }
-                    return false;
-                });
-                for (var i = 1; i < providers.length; i++) {
-                    pipes.pipe(
-                        async () => {
-                            let provider = await providers[i](editor, node, positionOf);
-                            if (provider && provider.length) {
-                                provider.forEach(hint => {
-                                    hintList.addHint(hint);
-                                })
-                                return true;
-                            }
-                            return false;
-                        }
-                    )
-                }
-                pipes.pipe(async () => {
-                    return true;
-                });
-
-                promises.push(pipes);
+                )
             }
+            pipes.pipe(() => true);
+
+            promises.push(pipes);
         }
         await promises.done();
 

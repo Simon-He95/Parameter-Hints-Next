@@ -2,42 +2,38 @@ const vscode = require('vscode');
 const ts = require('typescript');
 const { hoverProvider } = require('../../generic/providers');
 module.exports.hoverProvider = async (editor, node, positionOf) => {
-
-    let nodePosition = positionOf(node.start);
-    let hoverCommand = await hoverProvider(editor, nodePosition);
-    if (hoverCommand.length > 0 && hoverCommand[0].contents && hoverCommand[0].contents.length > 0) {
+    const nodePosition = positionOf(node.start);
+    const hoverCommand = await hoverProvider(editor, nodePosition);
+    const command = hoverCommand[0]
+    if (command && command.contents && command.contents.length > 0) {
         // get typescript type
         let subparams;
-        let mode = vscode.workspace.getConfiguration("parameterHints").get(
-            "hintingType",
-        );
-        let parsingString = getTypescriptType(hoverCommand)
+        const mode = vscode.workspace.getConfiguration("parameterHints").get("hintingType");
+        const parsingString = getTypescriptType(hoverCommand)
         if (!parsingString) {
             return false;
         }
-        let preparse = parsingString.trim();
-        preparse = preparse.replace(/^var(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4');
-        preparse = preparse.replace(/^constructor\s*([a-zA-Z0-9]+)\s*\(/s, '(method) a$1(');
-        preparse = preparse.replace(/^const(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4');
-        preparse = preparse.replace(/^let(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4');
-        preparse = preparse.replace(/\(method\)(([^(]*?)\.|\s*)([a-z_A-Z0-9]+)(\s*\(|\s*<)/s, '(method) function $3$4');
-        preparse = preparse.replace(/\(alias\)((.*?)\.|\s*)([a-z_A-Z0-9]+)(\s*\(|\s*<)/s, '(method) function $3$4');
-        preparse = preparse.replace(/function (([^(]*?)\.|\s*)([a-z_A-Z0-9]+)(\s*\(|\s*<)/s, '(method) function $3$4');
-        preparse = preparse.replace(/function\s*([a-zA-Z_0-9]+\.)([a-z_A-Z0-9]+)/s, 'function $2');
-        preparse = preparse.replace(/\(method\)\s*function\s*([a-z_A-Z0-9]+)\s*<(.*?)>\(/s, '(method) function $1(');
+        let preparse = parsingString.trim()
+            .replace(/^var(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4')
+            .replace(/^constructor\s*([a-zA-Z0-9]+)\s*\(/s, '(method) a$1(')
+            .replace(/^const(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4')
+            .replace(/^let(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4')
+            .replace(/\(method\)(([^(]*?)\.|\s*)([a-z_A-Z0-9]+)(\s*\(|\s*<)/s, '(method) function $3$4')
+            .replace(/\(alias\)((.*?)\.|\s*)([a-z_A-Z0-9]+)(\s*\(|\s*<)/s, '(method) function $3$4')
+            .replace(/function (([^(]*?)\.|\s*)([a-z_A-Z0-9]+)(\s*\(|\s*<)/s, '(method) function $3$4')
+            .replace(/function\s*([a-zA-Z_0-9]+\.)([a-z_A-Z0-9]+)/s, 'function $2')
+            .replace(/\(method\)\s*function\s*([a-z_A-Z0-9]+)\s*<(.*?)>\(/s, '(method) function $1(')
 
-        while (preparse.match((/^\(method\) /))) {
+        while (/^\(method\) /.test(preparse)) {
             preparse = preparse.replace(/^\(method\) /, '');
         }
 
         preparse = preparse.replace(/<(.*?)>(,|\)|\s*\|)/g, '$2');
-        //console.log(preparse);
-        let parsed = ts.createSourceFile('inline.ts', preparse, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+        const parsed = ts.createSourceFile('inline.ts', preparse, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
         subparams = parsed.statements[0].parameters;
         if (!subparams) {
             return false;
         }
-        //console.log(subparams, node.arguments.length);
         let params = [];
         let variadicLabel = '';
         var variadicCounter = 0;
@@ -62,8 +58,9 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
                 }
                 label = subparams[i];
                 if (mode === 'typeOnly') {
-                    if (label.type && label.type.getFullText().includes('|')) {
-                        label = label.type.types.map(e => {
+                    const type = label.type
+                    if (type && type.getFullText().includes('|')) {
+                        label = type.types.map(e => {
                             if (e.elementType && e.elementType.typeName) { return e.elementType.typeName.escapedText }
                             if (e.typeName) { return e.typeName.escapedText }
                             if (e.kind === ts.SyntaxKind.FunctionType) { return 'Function' }
@@ -99,8 +96,9 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
                     let type = label.type.getFullText();
 
                     if (type.includes('|')) {
-                        if (label.type.types) {
-                            type = label.type.types.map(e => {
+                        const types = label.type.types
+                        if (types) {
+                            type = types.map(e => {
                                 if (e.elementType && e.elementType.typeName) { return e.elementType.typeName.escapedText }
                                 if (e.typeName) { return e.typeName.escapedText }
                                 if (e.kind === ts.SyntaxKind.FunctionType) { return 'Function' }
@@ -135,15 +133,9 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
                 } else if (mode === 'variableOnly') {
                     label = label.name.escapedText;
                 }
-                //console.log(variadic, label);
                 if (variadic) {
                     variadicLabel = label;
-                    //console.log(variadicLabel);
-                    if (mode === 'typeOnly') {
-                        label = variadicLabel;
-                    } else {
-                        label = variadicLabel + '[' + variadicCounter + ']';
-                    }
+                    label = variadicLabel + mode === 'typeOnly' ? '' : `[${variadicCounter}]`;
                     variadicCounter++;
                 }
             }

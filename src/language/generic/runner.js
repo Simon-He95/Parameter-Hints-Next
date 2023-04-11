@@ -5,9 +5,7 @@ module.exports.runner = function runner(languageRunner, editor, after, parserOpt
     let _languageRunner = null;
     let _runner = cancellablePromise(async (resolve, reject, state) => {
 
-        _languageRunner = () => promisable(async () => await languageRunner(state, (action) => {
-            return promisable(action, () => state.done);
-        }, editor, after, parserOptions), () => state.done);
+        _languageRunner = () => promisable(async () => await languageRunner(state, (action) => promisable(action, () => state.done), editor, after, parserOptions), () => state.done);
 
 
         try {
