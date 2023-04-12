@@ -17,6 +17,7 @@ const hintDecorationType = vscode.window.createTextEditorDecorationType({})
 export function activate(context) {
   let activeEditor = vscode.window.activeTextEditor
   let currentRunner = null
+  const cacheMap = new Map()
 
   const messageHeader = 'Parameter Hints: '
   const hideMessageAfterMs = 3000
@@ -54,28 +55,28 @@ export function activate(context) {
       if (!isEnabled && !force)
         return
       if (languagesEnabled.includes('php') && languageId === 'php')
-        currentRunner = runner(phpRunner, editor, showHints)
+        currentRunner = runner(phpRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.Unknown })
 
       else if (languagesEnabled.includes('typescript') && languageId === 'typescript')
-        currentRunner = runner(typescriptRunner, editor, showHints, { language: ts.ScriptKind.TS })
+        currentRunner = runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS })
 
       else if (languagesEnabled.includes('typescriptreact') && languageId === 'typescriptreact')
-        currentRunner = runner(typescriptRunner, editor, showHints, { language: ts.ScriptKind.TSX })
+        currentRunner = runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TSX })
 
       else if (languagesEnabled.includes('javascript') && languageId === 'javascript')
-        currentRunner = runner(typescriptRunner, editor, showHints, { language: ts.ScriptKind.JS })
+        currentRunner = runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.JS })
 
       else if (languagesEnabled.includes('javascriptreact') && languageId === 'javascriptreact')
-        currentRunner = runner(typescriptRunner, editor, showHints, { language: ts.ScriptKind.JSX })
+        currentRunner = runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.JSX })
 
       else if (languagesEnabled.includes('vue') && languageId === 'vue')
-        currentRunner = runner(typescriptRunner, editor, showHints, { language: ts.ScriptKind.TS })
+        currentRunner = runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS })
     }, time)
   }
   const clear = (editor) => {
     if (timeout)
       clearTimeout(timeout)
-
+    cacheMap.clear()
     currentRunner && !currentRunner.state.done && currentRunner.reject()
     editor && editor.setDecorations(hintDecorationType, [new vscode.Range(0, 0, 0, 0)])
   }
@@ -97,6 +98,7 @@ export function activate(context) {
   trigger('on start', activeEditor, false, 100)
 
   context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor((editor) => {
+    cacheMap.clear()
     activeEditor = editor
     if (activeEditor)
       trigger('change_active_text_editor', activeEditor, false, 100)

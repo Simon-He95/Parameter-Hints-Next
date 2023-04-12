@@ -55,5 +55,12 @@ class HintList {
     }
     return hintList
   }
+
+  getHint(hint = null) {
+    return Hints.paramHint(hint.label, new Range(
+      this.positionOf(hint.start),
+      this.positionOf(hint.end),
+    ))
+  }
 }
 module.exports = HintList
