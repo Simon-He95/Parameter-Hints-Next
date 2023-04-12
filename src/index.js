@@ -30,6 +30,8 @@ export function activate(context) {
   let timeout = null
 
   const trigger = (identifier, editor, force, time = 100) => {
+    if (!editor)
+      return
     const languageId = editor.document.languageId
     if (currentRunner && !currentRunner.state.done)
       currentRunner.reject()
@@ -47,6 +49,8 @@ export function activate(context) {
           : [new vscode.Range(0, 0, 0, 0)])
     }
     timeout = setTimeout(() => {
+      if (!editor)
+        return
       if (!isEnabled && !force)
         return
       if (languagesEnabled.includes('php') && languageId === 'php')
