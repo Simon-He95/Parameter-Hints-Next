@@ -29,7 +29,21 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
 
     preparse = preparse.replace(/<(.*?)>(,|\)|\s*\|)/g, '$2')
     const parsed = ts.createSourceFile('inline.ts', preparse, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
-    const subparams = parsed.statements[0].parameters
+    const statement = parsed.statements[0]
+    if (statement.kind === ts.SyntaxKind.VariableStatement) {
+      // VariableStatement
+      const match = preparse.match(/:([\s\n\w\{\}\?;\:\<\>\[\]]*)/)
+      if (!match)
+        return false
+      return [
+        {
+          label: `:${match[1].replace(/\s*\n\s*/g, '').trim()}`,
+          start: node.end,
+          end: node.end,
+        },
+      ]
+    }
+    const subparams = statement.parameters
     if (!subparams)
       return false
 
@@ -162,7 +176,7 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
             if (typeof e !== 'string')
               e = ''
 
-            type = e
+            type = e || type.replace(/\s*\n\s*/g, '').trim()
           }
           label = `${type} ${label.name.escapedText}`
         }

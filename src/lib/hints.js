@@ -55,6 +55,7 @@ class Hints {
           borderRadius: '5px',
           fontStyle: 'italic',
           fontWeight: '400; font-size: 12px; line-height: 1;',
+          bracketSpacing: true,
         },
       },
     }

@@ -8,6 +8,14 @@ module.exports.parser = (text, parserOptions) => {
     dashAst(ast, (currentNode) => {
       try {
         const expression = currentNode.expression
+        if (currentNode.escapedText && (currentNode.kind === ts.SyntaxKind.Identifier) && (currentNode.parent.kind === ts.SyntaxKind.VariableDeclaration)) {
+          currentNode.start = currentNode.getStart()
+          currentNode.end = currentNode.getEnd()
+          currentNode.name = currentNode.escapedText
+          currentNode.final_end = currentNode.getEnd()
+          nodes[currentNode.start] = currentNode
+        }
+        else
         if (expression && (expression.name || expression.kind === ts.SyntaxKind.Identifier) && (currentNode.kind === ts.SyntaxKind.CallExpression || currentNode.kind === ts.SyntaxKind.NewExpression) && currentNode.arguments && currentNode.arguments.length) {
           if (expression.name) {
             currentNode.start = expression.name.getStart()
