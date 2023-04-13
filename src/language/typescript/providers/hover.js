@@ -33,6 +33,7 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
       .replace(/_[^:]+:\s*\w+[;]/g, '') // 过滤私有属性
       .replace(/\[Symbol\.[^:]+:\s*\w+[;]/g, '') // 过滤[Symbol.iterator]
       .replace(/[\&\|]\s*{[\n\s]*}/g, '') // 过滤空的{}
+      .replace(/{[\n\s]*\[Symbol\.replace\][^;]+;\n}/, 'String | RegExp')
     const parsed = ts.createSourceFile('inline.ts', preparse, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
     const statement = parsed.statements[0]
     if (statement.kind === ts.SyntaxKind.VariableStatement) {
@@ -59,7 +60,6 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
     for (let i = 0; i < node.arguments.length; i++) {
       let label
       if (variadicLabel) {
-        // console.log(variadicLabel);
         if (mode === 'typeOnly')
           label = variadicLabel
         else
@@ -97,7 +97,7 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
               if (e.kind === ts.SyntaxKind.ObjectKeyword)
                 return 'Object'
               return ''
-            }).filter(v => v).join(' | ')
+            }).filter(Boolean).join(' | ')
           }
           else {
             let e = label.type
@@ -154,10 +154,7 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
                 if (e.kind === ts.SyntaxKind.ObjectKeyword)
                   return 'Object'
                 return ''
-              }).filter(v => v).join(' | ')
-            }
-            else {
-              type = ''
+              }).filter(Boolean).join(' | ')
             }
           }
           else {
@@ -165,19 +162,19 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
             if (e) {
               if (e.elementType && e.elementType.typeName)
                 e = e.elementType.typeName.escapedText
-              if (e.typeName)
+              else if (e.typeName)
                 e = e.typeName.escapedText
-              if (e.kind === ts.SyntaxKind.FunctionType)
+              else if (e.kind === ts.SyntaxKind.FunctionType)
                 e = 'Function'
-              if (e.kind === ts.SyntaxKind.TypeLiteral)
+              else if (e.kind === ts.SyntaxKind.TypeLiteral)
                 e = ''
-              if (e.kind === ts.SyntaxKind.StringKeyword)
+              else if (e.kind === ts.SyntaxKind.StringKeyword)
                 e = 'String'
-              if (e.kind === ts.SyntaxKind.NumberKeyword)
+              else if (e.kind === ts.SyntaxKind.NumberKeyword)
                 e = 'Number'
-              if (e.kind === ts.SyntaxKind.BooleanKeyword)
+              else if (e.kind === ts.SyntaxKind.BooleanKeyword)
                 e = 'Boolean'
-              if (e.kind === ts.SyntaxKind.ObjectKeyword)
+              else if (e.kind === ts.SyntaxKind.ObjectKeyword)
                 e = 'Object'
             }
             if (typeof e !== 'string')
@@ -191,8 +188,12 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
           label = label.name.escapedText
         }
         if (variadic) {
-          variadicLabel = label
-          label = variadicLabel + mode === 'typeOnly' ? '' : `[${variadicCounter}]`
+          const match = label.match(/([\w,\(\)\|\s\<\>\[\]]+)(\[\])(.*)/)
+          if (match)
+            variadicLabel = match[1].replace(/^\s*?\((.*)\)$/, '$1') + match[3]
+          else
+            variadicLabel = label
+          label = `${variadicLabel}[${variadicCounter}]`
           variadicCounter++
         }
       }

@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode')
 const ts = require('typescript')
+const { minimatch } = require('minimatch')
 const { runner } = require('./language/generic/runner')
 const { runner: phpRunner } = require('./language/php/runner')
 const { runner: typescriptRunner } = require('./language/typescript/runner')
@@ -27,11 +28,14 @@ export function activate(context) {
   const languagesEnabled = vscode.workspace.getConfiguration('parameterHints').get(
     'languages',
   )
-
+  const ignores = (vscode.workspace.getConfiguration('parameterHints').get(
+    'ignores',
+  ) || []).concat(['dist/**', '**/*.d.ts', 'node_modules/**'])
   let timeout = null
 
   const trigger = (identifier, editor, force, time = 100) => {
-    if (!editor)
+    // 如果是打包后的dist目录下的文件则不再检测
+    if (!editor || isIgnoredFile(editor, ignores))
       return
     const languageId = editor.document.languageId
     if (currentRunner && !currentRunner.state.done)
@@ -118,3 +122,8 @@ export function activate(context) {
 
 // this method is called when your extension is deactivated
 export function deactivate() { }
+
+function isIgnoredFile(editor, ignores) {
+  const filePath = editor.document.uri.fsPath
+  return ignores.some(pattern => minimatch(filePath, pattern, { dot: true }))
+}

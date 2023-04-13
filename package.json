@@ -122,6 +122,9 @@
     "compile": "tsc -p ./",
     "watch": "node ./src/index.js -watch"
   },
+  "dependencies": {
+    "minimatch": "^9.0.0"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^0.38.4",
     "@types/node": "^13.13.21",
