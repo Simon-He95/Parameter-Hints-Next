@@ -37,7 +37,7 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
     const statement = parsed.statements[0]
     if (statement.kind === ts.SyntaxKind.VariableStatement) {
       // VariableStatement
-      const match = preparse.match(/:([\s\n\w\{\}\?;\:\<\>\[\]\|]*)/)
+      const match = preparse.match(/:([\s\n\w\{\}\?;\:\<\>\[\]\|,]*)/)
       if (!match)
         return false
       return [
