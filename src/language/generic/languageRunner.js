@@ -8,7 +8,7 @@ module.exports = async (state, pipeline, editor, parser, after, providers, cache
   let nodes = parser(text, parserOptions)
   let cacheHints = []
   if (cacheMap.size)
-    [nodes, cacheHints] = getCacheNode(nodes, positionOf, cacheMap)
+    [nodes, cacheHints] = getCacheNode(nodes, cacheMap)
 
   const runner = async () => {
     const hintList = new HintList(positionOf, editor)
@@ -74,7 +74,7 @@ function generateKey(node) {
   return [name, pos, kind, start, end, final_end].join(';')
 }
 
-function getCacheNode(nodes, positionOf, cacheMap) {
+function getCacheNode(nodes, cacheMap) {
   const result = []
   const nocacheMap = nodes.filter((node) => {
     const key = generateKey(node)

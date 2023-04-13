@@ -27,12 +27,17 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
     while (/^\(method\) /.test(preparse))
       preparse = preparse.replace(/^\(method\) /, '')
 
+    const replacethreepoint = '__点点点__'
     preparse = preparse.replace(/<(.*?)>(,|\)|\s*\|)/g, '$2')
+      .replace(/\w+<...>/g, v => v.replace('...', replacethreepoint))
+      .replace(/_[^:]+:\s*\w+[;]/g, '') // 过滤私有属性
+      .replace(/\[[^:]+:\s*\w+[;]/g, '') // 过滤[Symbol.iterator]
+      .replace(/[\&\|]\s*{[\n\s]*}/g, '') // 过滤空的{}
     const parsed = ts.createSourceFile('inline.ts', preparse, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
     const statement = parsed.statements[0]
     if (statement.kind === ts.SyntaxKind.VariableStatement) {
       // VariableStatement
-      const match = preparse.match(/:([\s\n\w\{\}\?;\:\<\>\[\]]*)/)
+      const match = preparse.match(/:([\s\n\w\{\}\?;\:\<\>\[\]\|]*)/)
       if (!match)
         return false
       return [
@@ -124,10 +129,12 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
             variadicLabel = label
         }
         else if (mode === 'variableAndType') {
+          if (!label.type)
+            continue
           let type = label.type.getFullText()
 
           if (type.includes('|')) {
-            const types = label.type.types
+            const types = label.type?.types
             if (types) {
               type = types.map((e) => {
                 if (e.elementType && e.elementType.typeName)
@@ -191,7 +198,7 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
       }
       if (label) {
         params.push({
-          label: `${label.trim()}:`,
+          label: `${label.trim().replaceAll(replacethreepoint, '...').replace(/;}/g, '}')}:`,
           start: node.arguments[i].getStart(),
           end: node.arguments[i].getEnd(),
         })
