@@ -14,10 +14,10 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
       return false
 
     let preparse = parsingString.trim()
-      .replace(/^var(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4')
+      // .replace(/^var(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4')
       .replace(/^constructor\s*([a-zA-Z0-9]+)\s*\(/s, '(method) a$1(')
-      .replace(/^const(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4')
-      .replace(/^let(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4')
+      // .replace(/^const(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4')
+      // .replace(/^let(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4')
       .replace(/\(method\)(([^(]*?)\.|\s*)([a-z_A-Z0-9]+)(\s*\(|\s*<)/s, '(method) function $3$4')
       .replace(/\(alias\)((.*?)\.|\s*)([a-z_A-Z0-9]+)(\s*\(|\s*<)/s, '(method) function $3$4')
       .replace(/function (([^(]*?)\.|\s*)([a-z_A-Z0-9]+)(\s*\(|\s*<)/s, '(method) function $3$4')
@@ -31,13 +31,13 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
     preparse = preparse.replace(/<(.*?)>(,|\)|\s*\|)/g, '$2')
       .replace(/\w+<...>/g, v => v.replace('...', replacethreepoint))
       .replace(/_[^:]+:\s*\w+[;]/g, '') // 过滤私有属性
-      .replace(/\[[^:]+:\s*\w+[;]/g, '') // 过滤[Symbol.iterator]
+      .replace(/\[Symbol\.[^:]+:\s*\w+[;]/g, '') // 过滤[Symbol.iterator]
       .replace(/[\&\|]\s*{[\n\s]*}/g, '') // 过滤空的{}
     const parsed = ts.createSourceFile('inline.ts', preparse, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
     const statement = parsed.statements[0]
     if (statement.kind === ts.SyntaxKind.VariableStatement) {
       // VariableStatement
-      const match = preparse.match(/:([\s\n\w\{\}\?;\:\<\>\[\]\|,]*)/)
+      const match = preparse.match(/:([\s\n\w\{\}\?;\:\<\>\[\]\|,\(\)]*)/)
       if (!match)
         return false
       return [
