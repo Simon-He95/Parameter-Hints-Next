@@ -42,7 +42,7 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
         return false
       return [
         {
-          label: `:${match[1].replace(/\s*\n\s*/g, '').trim()}`,
+          label: `:${match[1].replace(/\s*\n\s*/g, '').trim().replace(/;}/g, '}')}`,
           start: node.end,
           end: node.end,
         },
