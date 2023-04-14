@@ -14,10 +14,10 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
       return false
 
     let preparse = parsingString.trim()
-      // .replace(/^var(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4')
+      .replace(/^var(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4')
       .replace(/^constructor\s*([a-zA-Z0-9]+)\s*\(/s, '(method) a$1(')
-      // .replace(/^const(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4')
-      // .replace(/^let(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4')
+      .replace(/^const(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4')
+      .replace(/^let(.*?):\s*(.*?)(\s*new\s*.*?\(|\()(.*)/s, '(method) a$2($4')
       .replace(/\(method\)(([^(]*?)\.|\s*)([a-z_A-Z0-9]+)(\s*\(|\s*<)/s, '(method) function $3$4')
       .replace(/\(alias\)((.*?)\.|\s*)([a-z_A-Z0-9]+)(\s*\(|\s*<)/s, '(method) function $3$4')
       .replace(/function (([^(]*?)\.|\s*)([a-z_A-Z0-9]+)(\s*\(|\s*<)/s, '(method) function $3$4')
@@ -38,12 +38,17 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
     const statement = parsed.statements[0]
     if (statement.kind === ts.SyntaxKind.VariableStatement) {
       // VariableStatement
-      const match = preparse.match(/:([\s\n\w\{\}\?;\:\<\>\[\]\|,\(\)=]*)/)
+      const match = preparse.match(/:([\s\n\w\{\}\?;\:\<\>\[\]\|,\(\)=\.]*)/)
       if (!match)
         return false
+      // 将() =>xx 简化成Function
+      const label = `:${match[1]
+        .replace(/\s*\n\s*/g, '')
+        .trim()
+        .replace(/;}/g, '}')}`
       return [
         {
-          label: `:${match[1].replace(/\s*\n\s*/g, '').trim().replace(/;}/g, '}')}`,
+          label,
           start: node.end,
           end: node.end,
         },
@@ -79,52 +84,12 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
         if (mode === 'typeOnly') {
           const type = label.type
           if (type && type.getFullText().includes('|')) {
-            label = type.types.map((e) => {
-              if (e.elementType && e.elementType.typeName)
-                return e.elementType.typeName.escapedText
-              if (e.typeName)
-                return e.typeName.escapedText
-              if (e.kind === ts.SyntaxKind.FunctionType)
-                return 'Function'
-              if (e.kind === ts.SyntaxKind.TypeLiteral)
-                return ''
-              if (e.kind === ts.SyntaxKind.StringKeyword)
-                return 'String'
-              if (e.kind === ts.SyntaxKind.NumberKeyword)
-                return 'Number'
-              if (e.kind === ts.SyntaxKind.BooleanKeyword)
-                return 'Boolean'
-              if (e.kind === ts.SyntaxKind.ObjectKeyword)
-                return 'Object'
-              return ''
-            }).filter(Boolean).join(' | ')
+            label = type.types.map(getType).filter(Boolean).join(' | ')
           }
           else {
-            let e = label.type
-            if (e) {
-              if (e.elementType && e.elementType.typeName)
-                e = e.elementType.typeName.escapedText
-              if (e.typeName)
-                e = e.typeName.escapedText
-              if (e.kind === ts.SyntaxKind.FunctionType)
-                e = 'Function'
-              if (e.kind === ts.SyntaxKind.TypeLiteral)
-                e = ''
-              if (e.kind === ts.SyntaxKind.StringKeyword)
-                e = 'String'
-              if (e.kind === ts.SyntaxKind.NumberKeyword)
-                e = 'Number'
-              if (e.kind === ts.SyntaxKind.BooleanKeyword)
-                e = 'Boolean'
-              if (e.kind === ts.SyntaxKind.ObjectKeyword)
-                e = 'Object'
-            }
-            if (typeof e !== 'string')
-              e = ''
-
-            label = e
+            const e = label.type
+            label = e ? getType(e) : e
           }
-
           if (label && variadic)
             variadicLabel = label
         }
@@ -135,54 +100,14 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
 
           if (type.includes('|')) {
             const types = label.type?.types
-            if (types) {
-              type = types.map((e) => {
-                if (e.elementType && e.elementType.typeName)
-                  return e.elementType.typeName.escapedText
-                if (e.typeName)
-                  return e.typeName.escapedText
-                if (e.kind === ts.SyntaxKind.FunctionType)
-                  return 'Function'
-                if (e.kind === ts.SyntaxKind.TypeLiteral)
-                  return ''
-                if (e.kind === ts.SyntaxKind.StringKeyword)
-                  return 'String'
-                if (e.kind === ts.SyntaxKind.NumberKeyword)
-                  return 'Number'
-                if (e.kind === ts.SyntaxKind.BooleanKeyword)
-                  return 'Boolean'
-                if (e.kind === ts.SyntaxKind.ObjectKeyword)
-                  return 'Object'
-                return ''
-              }).filter(Boolean).join(' | ')
-            }
+            if (types)
+              type = types.map(getType).filter(Boolean).join(' | ')
           }
           else {
-            let e = label.type
-            if (e) {
-              if (e.elementType && e.elementType.typeName)
-                e = e.elementType.typeName.escapedText
-              else if (e.typeName)
-                e = e.typeName.escapedText
-              else if (e.kind === ts.SyntaxKind.FunctionType)
-                e = 'Function'
-              else if (e.kind === ts.SyntaxKind.TypeLiteral)
-                e = ''
-              else if (e.kind === ts.SyntaxKind.StringKeyword)
-                e = 'String'
-              else if (e.kind === ts.SyntaxKind.NumberKeyword)
-                e = 'Number'
-              else if (e.kind === ts.SyntaxKind.BooleanKeyword)
-                e = 'Boolean'
-              else if (e.kind === ts.SyntaxKind.ObjectKeyword)
-                e = 'Object'
-            }
-            if (typeof e !== 'string')
-              e = ''
-
-            type = e || type.replace(/\s*\n\s*/g, '').trim()
+            const e = label.type
+            type = e ? getType(e) : type.replace(/\s*\n\s*/g, '').trim()
           }
-          label = `${type} ${label.name.escapedText}`
+          label = `${type.replace(/(readonly)|(private)|(public)|(protected)|(static)|(abstract)\s*/g, '')} ${label.name.escapedText}`
         }
         else if (mode === 'variableOnly') {
           label = label.name.escapedText
@@ -221,4 +146,26 @@ function getTypescriptType(hoverCommand) {
         return match[1]
     }
   }
+}
+
+function getType(e) {
+  const text = e.getText()
+  let result = null
+  if (e.elementType && e.elementType.typeName)
+    result = e.elementType.typeName.escapedText
+  else if (e.typeName)
+    result = e.typeName.escapedText
+  else if (e.kind === ts.SyntaxKind.FunctionType)
+    result = 'Function'
+  // else if (e.kind === ts.SyntaxKind.TypeLiteral)
+  //   result = ''
+  else if (e.kind === ts.SyntaxKind.StringKeyword)
+    result = 'String'
+  else if (e.kind === ts.SyntaxKind.NumberKeyword)
+    result = 'Number'
+  else if (e.kind === ts.SyntaxKind.BooleanKeyword)
+    result = 'Boolean'
+  else if (e.kind === ts.SyntaxKind.ObjectKeyword)
+    result = 'Object'
+  return result ?? text
 }

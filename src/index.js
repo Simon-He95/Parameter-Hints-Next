@@ -30,7 +30,7 @@ export function activate(context) {
   )
   const ignores = (vscode.workspace.getConfiguration('parameterHints').get(
     'ignores',
-  ) || []).concat(['dist/**', '**/*.d.ts', 'node_modules/**'])
+  ) || []).concat(['dist/**', '**/*.d.ts', '**/node_modules/**'])
   let timeout = null
 
   const trigger = (identifier, editor, force, time = 100) => {
