@@ -34,6 +34,7 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
       .replace(/\[Symbol\.[^:]+:\s*\w+[;]/g, '') // 过滤[Symbol.iterator]
       .replace(/[\&\|]\s*{[\n\s]*}/g, '') // 过滤空的{}
       .replace(/{[\n\s]*\[Symbol\.replace\][^;]+;\n}/, 'String | RegExp')
+      .replace(/[\s\n]*([{}])[\n\s]*/g, '$1')
     const parsed = ts.createSourceFile('inline.ts', preparse, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
     const statement = parsed.statements[0]
     if (statement.kind === ts.SyntaxKind.VariableStatement) {
