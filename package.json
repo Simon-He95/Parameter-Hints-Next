@@ -8,13 +8,14 @@
   "funding": "https://github.com/sponsors/Simon-He95",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Simon-He95/VSCode-Parameter-Hints.git"
+    "url": "https://github.com/Simon-He95/Parameter-Hints-Next.git"
   },
   "bugs": {
-    "url": "https://github.com/Simon-He95/VSCode-Parameter-Hints/issues"
+    "url": "https://github.com/Simon-He95/Parameter-Hints-Next/issues"
   },
   "keywords": [
-    "parameter-hints"
+    "parameter-hints",
+    "Parameter-Hints-Next"
   ],
   "categories": [
     "Other"
