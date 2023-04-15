@@ -50,6 +50,7 @@ export function activate(context) {
     javascript: editor => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.JS }),
     javascriptreact: editor => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.JSX }),
     vue: editor => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS }),
+    svelte: editor => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS }),
   }
   const clear = (editor) => {
     if (timeout)
