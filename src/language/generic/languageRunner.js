@@ -47,7 +47,7 @@ module.exports = async (state, pipeline, editor, parser, after, providers, cache
   let hints = await runner()
   let count = 0
   if (!state.done)
-    after(hints)
+    after(hints, editor)
 
   while (hints.length === 0 && count < 3 && !state.done && nodes.length) {
     // eslint-disable-next-line promise/param-names
@@ -55,7 +55,7 @@ module.exports = async (state, pipeline, editor, parser, after, providers, cache
     if (!state.done) {
       hints = await runner()
       if (!state.done)
-        after(hints)
+        after(hints, editor)
     }
     count++
   }
@@ -63,7 +63,7 @@ module.exports = async (state, pipeline, editor, parser, after, providers, cache
     return []
 
   if (!state.done)
-    after(hints)
+    after(hints, editor)
 
   return hints
 }

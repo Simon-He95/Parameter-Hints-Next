@@ -17,22 +17,37 @@ const hintDecorationType = vscode.window.createTextEditorDecorationType({})
 
 export function activate(context) {
   let activeEditor = vscode.window.activeTextEditor
-  let currentRunner = null
+  const isEnabled = vscode.workspace.getConfiguration('parameterHints').get('enabled')
+  const currentRunner = null
   const cacheMap = new Map()
-
+  let timeout = null
   const messageHeader = 'Parameter Hints: '
   const hideMessageAfterMs = 3000
-  const isEnabled = vscode.workspace.getConfiguration('parameterHints').get(
-    'enabled',
-  )
-  const languagesEnabled = vscode.workspace.getConfiguration('parameterHints').get(
-    'languages',
-  )
-  const ignores = (vscode.workspace.getConfiguration('parameterHints').get(
-    'ignores',
-  ) || []).concat(['dist/**', '**/*.d.ts', '**/node_modules/**'])
-  let timeout = null
-
+  const ignores = (vscode.workspace.getConfiguration('parameterHints').get('ignores') || []).concat(['dist/**', '**/*.d.ts', '**/node_modules/**'])
+  const showHints = (hints, editor) => {
+    if (hints === false || !isEnabled)
+      return
+    editor.setDecorations(
+      hintDecorationType,
+      hints.length
+        ? hints
+        : [new vscode.Range(0, 0, 0, 0)])
+  }
+  const clear = (editor) => {
+    if (timeout)
+      clearTimeout(timeout)
+    cacheMap.clear()
+    currentRunner && !currentRunner.state.done && currentRunner.reject()
+    editor && editor.setDecorations(hintDecorationType, [new vscode.Range(0, 0, 0, 0)])
+  }
+  const runnerMap = {
+    php: editor => runner(phpRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.Unknown }),
+    basic: (language, editor) => runner(typescriptRunner, editor, showHints, cacheMap, { language }),
+    typescript: editor => runnerMap.basic(ts.ScriptKind.TS, editor),
+    typescriptreact: editor => runnerMap.basic(ts.ScriptKind.TSX, editor),
+    javascript: editor => runnerMap.basic(ts.ScriptKind.JS, editor),
+    vue: editor => runnerMap.basic(ts.ScriptKind.TSX, editor),
+  }
   const trigger = (identifier, editor, force, time = 100) => {
     // 如果是打包后的dist目录下的文件则不再检测
     if (!editor || isIgnoredFile(editor, ignores))
@@ -44,45 +59,13 @@ export function activate(context) {
     if (timeout)
       clearTimeout(timeout)
 
-    const showHints = (hints) => {
-      if (hints === false || !isEnabled)
-        return
-      editor.setDecorations(
-        hintDecorationType,
-        hints.length
-          ? hints
-          : [new vscode.Range(0, 0, 0, 0)])
-    }
     timeout = setTimeout(() => {
-      if (!editor)
+      if (!editor || (!isEnabled && !force))
         return
-      if (!isEnabled && !force)
-        return
-      if (languagesEnabled.includes('php') && languageId === 'php')
-        currentRunner = runner(phpRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.Unknown })
-
-      else if (languagesEnabled.includes('typescript') && languageId === 'typescript')
-        currentRunner = runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS })
-
-      else if (languagesEnabled.includes('typescriptreact') && languageId === 'typescriptreact')
-        currentRunner = runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TSX })
-
-      else if (languagesEnabled.includes('javascript') && languageId === 'javascript')
-        currentRunner = runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.JS })
-
-      else if (languagesEnabled.includes('javascriptreact') && languageId === 'javascriptreact')
-        currentRunner = runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.JSX })
-
-      else if (languagesEnabled.includes('vue') && languageId === 'vue')
-        currentRunner = runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS })
+      const run = runnerMap[languageId](editor)
+      if (run)
+        run()
     }, time)
-  }
-  const clear = (editor) => {
-    if (timeout)
-      clearTimeout(timeout)
-    cacheMap.clear()
-    currentRunner && !currentRunner.state.done && currentRunner.reject()
-    editor && editor.setDecorations(hintDecorationType, [new vscode.Range(0, 0, 0, 0)])
   }
 
   vscode.commands.registerCommand('parameterHints.toggle', () => {
