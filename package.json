@@ -114,14 +114,13 @@
     ]
   },
   "scripts": {
-    "package": "vsce package",
+    "pack": "vsce package",
+    "dev": "tsup src/index.js --external vscode --watch",
     "build": "tsup src/index.js --external vscode",
     "publish": "vsce publish --no-dependencies",
     "release": "bumpp && npm run publish",
     "lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 --cache",
-    "lint:fix": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 --cache --fix",
-    "compile": "tsc -p ./",
-    "watch": "node ./src/index.js -watch"
+    "lint:fix": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 --cache --fix"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.38.4",

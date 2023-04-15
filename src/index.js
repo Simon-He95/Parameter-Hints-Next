@@ -93,7 +93,6 @@ export function activate(context) {
 
     vscode.window.setStatusBarMessage(message, hideMessageAfterMs)
   })
-
   trigger('on start', activeEditor, false, 100)
 
   context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor((editor) => {
