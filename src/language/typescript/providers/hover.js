@@ -29,11 +29,11 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
 
     const replacethreepoint = '__点点点__'
     preparse = preparse.replace(/<(.*?)>(,|\)|\s*\|)/g, '$2')
-      .replace(/\w+<...>/g, v => v.replace(/.../g, replacethreepoint))
+      .replace(/\w+<...>/g, v => v.replace(/\.\.\./g, replacethreepoint))
       .replace(/_[^:]+:\s*\w+[;]/g, '') // 过滤私有属性
+      .replace(/{[\n\s]*\[Symbol\.((replace)|(match))\][^;]+;\n}/, 'String | RegExp')
       .replace(/\[Symbol\.[^:]+:\s*\w+[;]/g, '') // 过滤[Symbol.iterator]
       .replace(/[\&\|]\s*{[\n\s]*}/g, '') // 过滤空的{}
-      .replace(/{[\n\s]*\[Symbol\.((replace)|(match))\][^;]+;\n}/, 'String | RegExp')
       .replace(/[\s\n]*([{}])[\n\s]*/g, '$1')
     const parsed = ts.createSourceFile('inline.ts', preparse, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
     const statement = parsed.statements[0]
