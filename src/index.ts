@@ -1,11 +1,9 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-const vscode = require('vscode')
-const ts = require('typescript')
-const { minimatch } = require('minimatch')
-const { runner } = require('./language/generic/runner')
-const { runner: phpRunner } = require('./language/php/runner')
-const { runner: typescriptRunner } = require('./language/typescript/runner')
+import * as vscode from 'vscode'
+import * as ts from 'typescript'
+import { minimatch } from 'minimatch'
+import { runner } from './language/generic/runner'
+import { runner as phpRunner } from './language/php/runner'
+import { runner as typescriptRunner } from './language/typescript/runner'
 
 const hintDecorationType = vscode.window.createTextEditorDecorationType({})
 // this method is called when your extension is activated
@@ -30,7 +28,7 @@ export function activate(context) {
   // )
   const ignores = (vscode.workspace.getConfiguration('parameterHints').get(
     'ignores',
-  ) || []).concat(['dist/**', '**/*.d.ts', '**/node_modules/**'])
+  ) as string[] || []).concat(['dist/**', '**/*.d.ts', '**/node_modules/**'])
   let timeout = null
 
   const showHints = (hints, editor) => {

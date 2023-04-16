@@ -1,4 +1,4 @@
-const { cancellablePromise } = require('./cancellablePromise')
+import { cancellablePromise } from './cancellablePromise'
 
 function pipe(action, condition, previousPromise, broken = false) {
   let next = null
@@ -47,7 +47,7 @@ function pipe(action, condition, previousPromise, broken = false) {
   }
 }
 
-module.exports.promisable = function promisable(action, condition) {
+export function promisable(action, condition) {
   let next = null
   let interval
   const promise = cancellablePromise(async (resolve, reject, state) => {
@@ -92,7 +92,7 @@ module.exports.promisable = function promisable(action, condition) {
   }
 }
 
-module.exports.promisableOne = function promisableOne(action, condition) {
+export function promisableOne(action, condition) {
   let interval
   const promise = cancellablePromise(async (resolve, reject, state) => {
     try {

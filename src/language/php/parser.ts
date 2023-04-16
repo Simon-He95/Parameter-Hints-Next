@@ -1,11 +1,11 @@
-const Engine = require('php-parser')
-const dashAst = require('../../lib/walker.js')
+import Engine from 'php-parser'
+import { dashAst } from '../../lib/walker.js'
 
-module.exports.parser = (text) => {
+export function parser(text) {
   const parser = new Engine({
     parser: {
       extractDoc: true,
-      php7: true,
+      // php7: true,
       suppressErrors: true,
     },
     ast: {
@@ -19,7 +19,7 @@ module.exports.parser = (text) => {
     if (currentNode.kind === 'call') {
       if (currentNode.what.kind === 'propertylookup' || currentNode.what.kind === 'staticlookup') {
         if (currentNode.arguments.length) {
-          const _node = {
+          const _node: any = {
             what: currentNode.what.offset,
             arguments: currentNode.arguments,
             loc: currentNode.loc,

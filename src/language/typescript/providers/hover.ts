@@ -1,10 +1,10 @@
-const vscode = require('vscode')
-const ts = require('typescript')
-const { hoverProvider } = require('../../generic/providers')
+import * as vscode from 'vscode'
+import * as ts from 'typescript'
+import { executeHoverProvider } from '../../generic/providers'
 
-module.exports.hoverProvider = async (editor, node, positionOf) => {
+export async function hoverProvider(editor, node, positionOf) {
   const nodePosition = positionOf(node.start)
-  const hoverCommand = await hoverProvider(editor, nodePosition)
+  const hoverCommand = await executeHoverProvider(editor, nodePosition)
   const command = hoverCommand[0]
   if (command && command.contents && command.contents.length > 0) {
     // get typescript type
@@ -55,7 +55,7 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
         },
       ]
     }
-    const subparams = statement.parameters
+    const subparams = (statement as any).parameters
     if (!subparams)
       return false
 

@@ -1,4 +1,4 @@
-module.exports.promiseList = () => {
+export function promiseList() {
   const list = []
   return {
     done: async () => {

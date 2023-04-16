@@ -1,13 +1,13 @@
-const vscode = require('vscode')
-const Engine = require('php-parser')
-const { hoverProvider } = require('../../generic/providers')
+import * as vscode from 'vscode'
+import Engine from 'php-parser'
+import { executeHoverProvider } from '../../generic/providers'
 /**
  * @param {vscode.TextEditor} editor
  *
  */
-module.exports.hoverProvider = async (editor, node, positionOf) => {
+export async function hoverProvider(editor, node, positionOf) {
   const nodePosition = positionOf(node.what.loc.start.offset)
-  const hoverCommand = await hoverProvider(editor, nodePosition)
+  const hoverCommand = await executeHoverProvider(editor, nodePosition)
 
   if (hoverCommand.length > 0 && hoverCommand[0].contents && hoverCommand[0].contents.length > 0) {
     const res = hoverCommand[0].contents[0].value
@@ -22,7 +22,7 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
       const parser = new Engine({
         parser: {
           extractDoc: true,
-          php7: true,
+          // php7: true,
           suppressErrors: true,
         },
         ast: {
@@ -36,7 +36,7 @@ module.exports.hoverProvider = async (editor, node, positionOf) => {
       )
       const ast = parser.parseCode(string)
 
-      const subparams = ast.children[0].arguments.map(e => `${(e.variadic ? '...' : '') + (e.byRef ? '&' : '')}$${e.name.name}`)
+      const subparams = (ast.children[0] as any).arguments.map(e => `${(e.variadic ? '...' : '') + (e.byRef ? '&' : '')}$${e.name.name}`)
       if (!subparams)
         return false
 

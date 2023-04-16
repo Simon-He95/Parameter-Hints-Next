@@ -1,7 +1,7 @@
-const { cancellablePromise } = require('../../lib/cancellablePromise')
-const { promisable } = require('../../lib/pipePromise')
+import { promisable } from '../../lib/pipePromise'
+import { cancellablePromise } from '../../lib/cancellablePromise'
 
-module.exports.runner = function runner(languageRunner, editor, after, cacheMap, parserOptions = {}) {
+export function runner(languageRunner, editor, after, cacheMap, parserOptions = {}) {
   let _languageRunner = null
   const _runner = cancellablePromise(async (resolve, reject, state) => {
     _languageRunner = () => promisable(async () => await languageRunner(state, action => promisable(action, () => state.done), editor, after, cacheMap, parserOptions), () => state.done)

@@ -1,12 +1,9 @@
-const assert = require('node:assert')
-
-module.exports = dashAst
-
+import assert from 'node:assert'
 /**
  * Call `cb` on each node in `ast`. If `cb` is an object, `cb.enter` is called before processing a Node's children,
  * and `cb.leave` is called after processing a Node's children.
  */
-function dashAst(ast, cb) {
+export function dashAst(ast, cb) {
   assert(ast && typeof ast === 'object' && (typeof ast.type === 'string' || typeof ast.kind === 'string' || typeof ast.kind === 'number'),
     'dash-ast: ast must be an AST node')
 
