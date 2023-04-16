@@ -14,7 +14,6 @@
     "url": "https://github.com/Simon-He95/Parameter-Hints-Next/issues"
   },
   "keywords": [
-    "parameter-hints",
     "Parameter-Hints-Next"
   ],
   "categories": [
@@ -115,8 +114,8 @@
   },
   "scripts": {
     "pack": "vsce package",
-    "dev": "tsup src/index.js --external vscode --watch",
-    "build": "tsup src/index.js --external vscode",
+    "dev": "tsup src/index.ts --external vscode --watch",
+    "build": "tsup src/index.ts --external vscode --minify",
     "publish": "vsce publish --no-dependencies",
     "release": "bumpp && npm run publish",
     "lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 --cache",

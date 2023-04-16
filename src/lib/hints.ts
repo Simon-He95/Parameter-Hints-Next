@@ -1,12 +1,13 @@
-const { ThemeColor, workspace } = require('vscode')
+import { ThemeColor, workspace } from 'vscode'
 
-class Hints {
+const currentState = workspace.getConfiguration('parameterHints')
+
+export class Hints {
   static margin() {
-    const currentState = workspace.getConfiguration('parameterHints')
-    const margins = currentState.get('margin').split(' ')
+    const margins = (currentState.get('margin') as string).split(' ')
     let top = 0
     if (margins[0].substr(0, 1) === '-') {
-      top = margins[0]
+      top = +margins[0]
       margins[0] = '0'
     }
     if (margins.length === 1)
@@ -17,7 +18,7 @@ class Hints {
 
     let bottom = 0
     if (margins[2].substr(0, 1) === '-') {
-      bottom = margins[2]
+      bottom = +margins[2]
       margins[2] = '0'
     }
     if (margins.length === 3)
@@ -27,8 +28,7 @@ class Hints {
   }
 
   static padding() {
-    const currentState = workspace.getConfiguration('parameterHints')
-    const paddings = currentState.get('padding').split(' ')
+    const paddings = (currentState.get('padding') as string).split(' ')
     if (paddings.length === 1)
       paddings.push(paddings[0])
 
@@ -61,5 +61,3 @@ class Hints {
     }
   }
 }
-
-module.exports = Hints

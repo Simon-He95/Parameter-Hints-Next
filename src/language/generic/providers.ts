@@ -1,13 +1,13 @@
 const vscode = require('vscode')
 
-module.exports.hoverProvider = async (editor, nodePosition) => {
+export async function executeHoverProvider(editor, nodePosition) {
   return await vscode.commands.executeCommand(
     'vscode.executeHoverProvider',
     editor.document.uri,
     nodePosition,
   )
 }
-module.exports.signatureProvider = async (editor, nodePosition) => {
+export async function executeSignatureHelpProvider(editor, nodePosition) {
   return await vscode.commands.executeCommand(
     'vscode.executeSignatureHelpProvider',
     editor.document.uri,

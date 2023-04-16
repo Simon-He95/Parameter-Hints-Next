@@ -1,6 +1,5 @@
-module.exports.cancellablePromise = function cancellablePromise(promiseFunction, unregister) {
-  const cancellable = {
-  }
+export function cancellablePromise(promiseFunction, unregister?: any) {
+  const cancellable: any = {}
   const state = {
     rejected: false,
     resolved: false,
@@ -8,7 +7,7 @@ module.exports.cancellablePromise = function cancellablePromise(promiseFunction,
   }
   let status = 'pending'
   let promise
-  const done = (force) => {
+  const done = (force?: any) => {
     if (unregister)
       unregister(force, promise)
   }

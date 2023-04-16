@@ -1,13 +1,11 @@
-const { getPositionOfFrom } = require('../../lib/getPositionOfFrom')
-const { promiseList } = require('../../lib/promiseList')
-const HintList = require('./hintList')
+import { getPositionOfFrom } from '../../lib/getPositionOfFrom'
+import { promiseList } from '../../lib/promiseList'
+import { HintList } from './hintList'
 
-module.exports = async (state, pipeline, editor, parser, after, providers, cacheMap, parserOptions = {}) => {
+export async function languageRunner(state, pipeline, editor, parser, after, providers, cacheMap, parserOptions = {}) {
   const text = editor.document.getText()
   const positionOf = getPositionOfFrom(editor)
   const nodes = parser(text, parserOptions)
-  const cacheHints = []
-  // todo: 找到能够复用的key
 
   const runner = async () => {
     const hintList = new HintList(positionOf, editor)
@@ -21,8 +19,6 @@ module.exports = async (state, pipeline, editor, parser, after, providers, cache
           return false
 
         provider.forEach(hint => hintList.addHint(hint))
-
-        // cacheMap.set(generateKey(node), provider.map(hint => hintList.getHint(hint)))
         return true
       })
       for (let i = 1; i < providers.length; i++) {
@@ -66,16 +62,4 @@ module.exports = async (state, pipeline, editor, parser, after, providers, cache
     after(hints, editor)
 
   return hints
-}
-
-function getCacheNode(nodes, key, cacheMap) {
-  const result = []
-  const nocacheMap = nodes.filter((node) => {
-    if (!cacheMap.has(key))
-      return true
-    const cacheHints = cacheMap.get(key)
-    result.push(...cacheHints)
-    return false
-  })
-  return [nocacheMap, result]
 }

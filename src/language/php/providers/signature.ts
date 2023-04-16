@@ -1,10 +1,10 @@
-const vscode = require('vscode')
-const { signatureProvider } = require('../../generic/providers')
+import * as vscode from 'vscode'
+import { executeSignatureHelpProvider } from '../../generic/providers'
 
-module.exports.signatureProvider = async (editor, node, positionOf) => {
+export async function signatureProvider(editor, node, positionOf) {
   const nodePosition = positionOf(node.what.loc.end.offset + 1)
 
-  const signatureHelp = await signatureProvider(editor, nodePosition)
+  const signatureHelp = await executeSignatureHelpProvider(editor, nodePosition)
   if (signatureHelp) {
     const signature = signatureHelp.signatures[signatureHelp.activeSignature]
     if (signature) {

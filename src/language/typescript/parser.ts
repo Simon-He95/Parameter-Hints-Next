@@ -1,7 +1,7 @@
-const ts = require('typescript')
-const dashAst = require('../../lib/walker.js')
+import * as ts from 'typescript'
+import { dashAst } from '../../lib/walker'
 
-module.exports.parser = (text, parserOptions) => {
+export function parser(text, parserOptions) {
   try {
     const ast = ts.createSourceFile('test.ts', text.replace(/\n\n/g, '\n '), ts.ScriptTarget.Latest, true, parserOptions.language)
     const nodes = {}
