@@ -30,15 +30,13 @@ function walk(node, parent, enter, leave) {
     return
 
   for (const k in node) {
-    if (has(node, k)) {
-      if (k === 'parent')
-        continue
-      const v = node[k]
-      if (isNode(v))
-        walk(v, node, enter, leave)
-      else if (Array.isArray(v))
-        walkArray(v, node, enter, leave)
-    }
+    if (!has(node, k) || k === 'parent')
+      continue
+    const v = node[k]
+    if (isNode(v))
+      walk(v, node, enter, leave)
+    else if (Array.isArray(v))
+      walkArray(v, node, enter, leave)
   }
 
   if (leave !== undefined)
