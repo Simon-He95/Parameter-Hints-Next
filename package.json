@@ -119,7 +119,7 @@
     "dev": "tsup src/index.ts --external vscode --watch",
     "build": "tsup src/index.ts --external vscode --minify",
     "publish": "vsce publish --no-dependencies",
-    "release": "bumpp && npm run publish",
+    "release": "bumpp && pnpm run publish",
     "lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 --cache",
     "lint:fix": "eslint . --ext .vue,.js,.ts,.jsx,.tsx,.md,.json --max-warnings 0 --cache --fix"
   },
@@ -132,10 +132,10 @@
     "eslint": "^8.37.0",
     "minimatch": "^9.0.0",
     "php-parser": "^3.0.1",
+    "pnpm": "^8.1.1",
     "tsup": "^6.7.0",
     "typescript": "^4.8.4",
     "vitest": "^0.29.8",
     "vsce": "^2.15.0"
-
   }
 }
