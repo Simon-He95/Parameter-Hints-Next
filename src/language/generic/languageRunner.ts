@@ -2,7 +2,7 @@ import { getPositionOfFrom } from '../../lib/getPositionOfFrom'
 import { promiseList } from '../../lib/promiseList'
 import { HintList } from './hintList'
 
-export async function languageRunner(state, pipeline, editor, parser, after, providers, cacheMap, parserOptions = {}) {
+export async function languageRunner(state: any, pipeline: any, editor: any, parser: any, after: any, providers: any, cacheMap: any, parserOptions = {}) {
   const text = editor.document.getText()
   const positionOf = getPositionOfFrom(editor)
   const nodes = parser(text, parserOptions)
@@ -18,7 +18,7 @@ export async function languageRunner(state, pipeline, editor, parser, after, pro
         if (!provider || !provider.length)
           return false
 
-        provider.forEach(hint => hintList.addHint(hint))
+        provider.forEach((hint: any) => hintList.addHint(hint))
         return true
       })
       for (let i = 1; i < providers.length; i++) {
@@ -27,7 +27,7 @@ export async function languageRunner(state, pipeline, editor, parser, after, pro
             const provider = await providers[i](editor, node, positionOf)
             if (!provider || !provider.length)
               return false
-            provider.forEach(hint => hintList.addHint(hint))
+            provider.forEach((hint: any) => hintList.addHint(hint))
             return true
           },
         )

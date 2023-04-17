@@ -3,7 +3,7 @@ import assert from 'node:assert'
  * Call `cb` on each node in `ast`. If `cb` is an object, `cb.enter` is called before processing a Node's children,
  * and `cb.leave` is called after processing a Node's children.
  */
-export function dashAst(ast, cb) {
+export function dashAst(ast: any, cb: any) {
   assert(ast && typeof ast === 'object' && (typeof ast.type === 'string' || typeof ast.kind === 'string' || typeof ast.kind === 'number'),
     'dash-ast: ast must be an AST node')
 
@@ -21,7 +21,7 @@ export function dashAst(ast, cb) {
   }
 }
 
-function walk(node, parent, enter, leave) {
+function walk(node: any, parent: any, enter: any, leave: any) {
   const cont = enter !== undefined ? enter(node, parent) : undefined
   if (cont === false)
     return
@@ -40,17 +40,17 @@ function walk(node, parent, enter, leave) {
     leave(node, parent)
 }
 
-function walkArray(nodes, parent, enter, leave) {
+function walkArray(nodes: any, parent: any, enter: any, leave: any) {
   for (let i = 0; i < nodes.length; i++) {
     if (isNode(nodes[i]))
       walk(nodes[i], parent, enter, leave)
   }
 }
 
-function isNode(node) {
+function isNode(node: any) {
   return typeof node === 'object' && node && (typeof node.type === 'string' || typeof node.kind === 'string' || typeof node.kind === 'number')
 }
 
-function has(obj, prop) {
+function has(obj: any, prop: any) {
   return Object.prototype.hasOwnProperty.call(obj, prop)
 }

@@ -2,9 +2,9 @@ import * as vscode from 'vscode'
 import * as ts from 'typescript'
 import { executeHoverProvider } from '../../generic/providers'
 
-export async function hoverProvider(editor, node, positionOf) {
+export async function hoverProvider(editor: any, node: any, positionOf: any) {
   const nodePosition = positionOf(node.start)
-  const hoverCommand = await executeHoverProvider(editor, nodePosition)
+  const hoverCommand: any = await executeHoverProvider(editor, nodePosition)
   const command = hoverCommand[0]
   if (command && command.contents && command.contents.length > 0) {
     // get typescript type
@@ -29,7 +29,7 @@ export async function hoverProvider(editor, node, positionOf) {
 
     const replacethreepoint = '__点点点__'
     preparse = preparse.replace(/<(.*?)>(,|\)|\s*\|)/g, '$2')
-      .replace(/\w+<...>/g, v => v.replace(/\.\.\./g, replacethreepoint))
+      .replace(/\w+<...>/g, (v: string) => v.replace(/\.\.\./g, replacethreepoint))
       .replace(/_[^:]+:\s*\w+[;]/g, '') // 过滤私有属性
       .replace(/{[\n\s]*\[Symbol\.((replace)|(match))\][^;]+;\n}/, 'String | RegExp')
       .replace(/\[Symbol\.[^:]+:\s*\w+[;]/g, '') // 过滤[Symbol.iterator]
@@ -138,7 +138,7 @@ export async function hoverProvider(editor, node, positionOf) {
 }
 const typescriptReg = /```typescript(.*?)```/s
 
-function getTypescriptType(hoverCommand) {
+function getTypescriptType(hoverCommand: any) {
   for (let i = 0; i < hoverCommand.length; i++) {
     const items = hoverCommand[i].contents
     for (let j = 0; j < items.length; j++) {
@@ -149,7 +149,7 @@ function getTypescriptType(hoverCommand) {
   }
 }
 
-function getType(e) {
+function getType(e: any) {
   const text = e.getText()
   let result = null
   if (e.elementType && e.elementType.typeName)

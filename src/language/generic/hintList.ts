@@ -6,7 +6,7 @@ export class HintList {
   hints: any
   positionOf: any
   editor: TextEditor
-  constructor(positionOf, editor) {
+  constructor(positionOf: any, editor: any) {
     this.hints = []
     this.positionOf = positionOf
     this.editor = editor
@@ -20,7 +20,7 @@ export class HintList {
     return true
   }
 
-  nodeVisible(node) {
+  nodeVisible(node: any) {
     const lineStart = this.positionOf(node.start).line
     const lineEnd = this.positionOf(node.final_end).line
     return this.editor.visibleRanges.some((range) => {
@@ -50,7 +50,7 @@ export class HintList {
     return hintList
   }
 
-  getHint(hint = null) {
+  getHint(hint: any) {
     return Hints.paramHint(hint.label, new Range(
       this.positionOf(hint.start),
       this.positionOf(hint.end),

@@ -1,12 +1,12 @@
 import { cancellablePromise } from './cancellablePromise'
 
-function pipe(action, condition, previousPromise, broken = false) {
-  let next = null
+function pipe(action: any, condition: any, previousPromise: any, broken = false) {
+  let next: any = null
   let promise
   let runningPromise = previousPromise
   if (!broken) {
     promise = () => {
-      runningPromise = cancellablePromise(async (resolve, reject) => {
+      runningPromise = cancellablePromise(async (resolve: any, reject: any) => {
         try {
           const output = await action()
           resolve(output)
@@ -28,14 +28,14 @@ function pipe(action, condition, previousPromise, broken = false) {
   }
   else {
     promise = () => {
-      runningPromise = cancellablePromise(async (resolve, reject) => {
+      runningPromise = cancellablePromise(async (resolve: any, reject: any) => {
         reject()
       })
       return runningPromise
     }
   }
   return {
-    pipe(action) {
+    pipe(action: any) {
       next = pipe(action, condition, runningPromise, broken)
       return next
     },
@@ -47,10 +47,10 @@ function pipe(action, condition, previousPromise, broken = false) {
   }
 }
 
-export function promisable(action, condition) {
-  let next = null
-  let interval
-  const promise = cancellablePromise(async (resolve, reject, state) => {
+export function promisable(action: any, condition: any) {
+  let next: any = null
+  let interval: any
+  const promise = cancellablePromise(async (resolve: any, reject: any, state: any) => {
     try {
       const output = await action(state)
       if (!output)
@@ -81,7 +81,7 @@ export function promisable(action, condition) {
   }
 
   return {
-    pipe(action) {
+    pipe(action: any) {
       next = pipe(action, condition, promise, condition && condition())
       return next
     },
@@ -92,9 +92,9 @@ export function promisable(action, condition) {
   }
 }
 
-export function promisableOne(action, condition) {
-  let interval
-  const promise = cancellablePromise(async (resolve, reject, state) => {
+export function promisableOne(action: any, condition: any) {
+  let interval: any
+  const promise = cancellablePromise(async (resolve: any, reject: any, state: any) => {
     try {
       const output = await action(state)
       resolve(output)

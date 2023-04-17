@@ -1,7 +1,7 @@
 import Engine from 'php-parser'
 import { dashAst } from '../../lib/walker.js'
 
-export function parser(text) {
+export function parser(text: string) {
   const parser = new Engine({
     parser: {
       extractDoc: true,
@@ -14,8 +14,8 @@ export function parser(text) {
     },
   })
   const ast = parser.parseCode(text)
-  const nodes = {}
-  dashAst(ast, (currentNode) => {
+  const nodes: any = {}
+  dashAst(ast, (currentNode: any) => {
     if (currentNode.kind === 'call') {
       if (currentNode.what.kind === 'propertylookup' || currentNode.what.kind === 'staticlookup') {
         if (currentNode.arguments.length) {

@@ -5,15 +5,15 @@ import { executeHoverProvider } from '../../generic/providers'
  * @param {vscode.TextEditor} editor
  *
  */
-export async function hoverProvider(editor, node, positionOf) {
+export async function hoverProvider(editor: any, node: any, positionOf: any) {
   const nodePosition = positionOf(node.what.loc.start.offset)
-  const hoverCommand = await executeHoverProvider(editor, nodePosition)
+  const hoverCommand: any = await executeHoverProvider(editor, nodePosition)
 
   if (hoverCommand.length > 0 && hoverCommand[0].contents && hoverCommand[0].contents.length > 0) {
     const res = hoverCommand[0].contents[0].value
     if (res) {
-      let parsingString = res.match(/```php(.*?)```/gs).map(e => /```php(.*?)```/gs.exec(e)[1])
-      parsingString = parsingString && parsingString.find(e => e.includes('function'))
+      let parsingString = res.match(/```php(.*?)```/gs).map((e: any) => /```php(.*?)```/gs.exec(e)![1])
+      parsingString = parsingString && parsingString.find((e: any) => e.includes('function'))
       const docParams = res.match(/_@param_ `(.*?)`/ig)
       if (!parsingString)
         return false
@@ -36,7 +36,7 @@ export async function hoverProvider(editor, node, positionOf) {
       )
       const ast = parser.parseCode(string)
 
-      const subparams = (ast.children[0] as any).arguments.map(e => `${(e.variadic ? '...' : '') + (e.byRef ? '&' : '')}$${e.name.name}`)
+      const subparams = (ast.children[0] as any).arguments.map((e: any) => `${(e.variadic ? '...' : '') + (e.byRef ? '&' : '')}$${e.name.name}`)
       if (!subparams)
         return false
 

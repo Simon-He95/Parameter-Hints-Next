@@ -13,11 +13,10 @@ const hintDecorationType = vscode.window.createTextEditorDecorationType({})
  * @param {vscode.ExtensionContext} context
  */
 
-export function activate(context) {
+export function activate(context: vscode.ExtensionContext) {
   let activeEditor = vscode.window.activeTextEditor
-  const currentRunner = null
+  const currentRunner: any = null
   const cacheMap = new Map()
-
   const messageHeader = 'Parameter Hints: '
   const hideMessageAfterMs = 3000
   const isEnabled = vscode.workspace.getConfiguration('parameterHints').get(
@@ -29,9 +28,9 @@ export function activate(context) {
   const ignores = (vscode.workspace.getConfiguration('parameterHints').get(
     'ignores',
   ) as string[] || []).concat(['dist/**', '**/*.d.ts', '**/node_modules/**'])
-  let timeout = null
+  let timeout: any = null
 
-  const showHints = (hints, editor) => {
+  const showHints = (hints: any, editor: vscode.TextEditor) => {
     if (hints === false || !isEnabled)
       return
     editor.setDecorations(
@@ -41,16 +40,16 @@ export function activate(context) {
         : [new vscode.Range(0, 0, 0, 0)])
   }
 
-  const runnerMap = {
-    php: editor => runner(phpRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.Unknown }),
-    typescript: editor => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS }),
-    typescriptreact: editor => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TSX }),
-    javascript: editor => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.JS }),
-    javascriptreact: editor => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.JSX }),
-    vue: editor => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS }),
-    svelte: editor => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS }),
+  const runnerMap: any = {
+    php: (editor: any) => runner(phpRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.Unknown }),
+    typescript: (editor: any) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS }),
+    typescriptreact: (editor: any) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TSX }),
+    javascript: (editor: any) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.JS }),
+    javascriptreact: (editor: any) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.JSX }),
+    vue: (editor: any) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS }),
+    svelte: (editor: any) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS }),
   }
-  const clear = (editor) => {
+  const clear = (editor: any) => {
     if (timeout)
       clearTimeout(timeout)
     cacheMap.clear()
@@ -58,7 +57,7 @@ export function activate(context) {
     editor && editor.setDecorations(hintDecorationType, [new vscode.Range(0, 0, 0, 0)])
   }
 
-  const trigger = (identifier, editor, force, time = 100) => {
+  const trigger = (identifier: any, editor: any, force: any, time = 100) => {
     // 如果是打包后的dist目录下的文件则不再检测
     if (!editor || isIgnoredFile(editor, ignores))
       return
@@ -116,7 +115,7 @@ export function activate(context) {
 // this method is called when your extension is deactivated
 export function deactivate() { }
 
-function isIgnoredFile(editor, ignores) {
+function isIgnoredFile(editor: any, ignores: string[]) {
   const filePath = editor.document.uri.fsPath
   return ignores.some(pattern => minimatch(filePath, pattern, { dot: true }))
 }

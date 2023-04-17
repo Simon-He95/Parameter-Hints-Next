@@ -1,3 +1,4 @@
+import type { Range } from 'vscode'
 import { ThemeColor, workspace } from 'vscode'
 
 const currentState = workspace.getConfiguration('parameterHints')
@@ -41,7 +42,7 @@ export class Hints {
     return `${paddings.join('px ')}px`
   }
 
-  static paramHint(message, range) {
+  static paramHint(message: string, range: Range) {
     // style
     return {
       range,

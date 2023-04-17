@@ -114,9 +114,10 @@
     ]
   },
   "scripts": {
-    "pack": "vsce package",
+    "pack": "vsce package --no-dependencies",
     "test": "vitest",
     "dev": "tsup src/index.ts --external vscode --watch",
+    "prd": "tsup src/index.ts --external vscode --minify --watch",
     "build": "tsup src/index.ts --external vscode --minify",
     "publish": "vsce publish --no-dependencies",
     "release": "bumpp && pnpm run publish",

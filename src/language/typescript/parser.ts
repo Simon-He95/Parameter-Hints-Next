@@ -1,11 +1,11 @@
 import * as ts from 'typescript'
 import { dashAst } from '../../lib/walker'
 
-export function parser(text, parserOptions) {
+export function parser(text: string, parserOptions: any) {
   try {
     const ast = ts.createSourceFile('test.ts', text.replace(/\n\n/g, '\n '), ts.ScriptTarget.Latest, true, parserOptions.language)
-    const nodes = {}
-    dashAst(ast, (currentNode) => {
+    const nodes: any = {}
+    dashAst(ast, (currentNode: any) => {
       try {
         const expression = currentNode.expression
         if (currentNode.escapedText && (currentNode.kind === ts.SyntaxKind.Identifier) && (currentNode.parent.kind === ts.SyntaxKind.VariableDeclaration)) {

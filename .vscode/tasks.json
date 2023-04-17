@@ -21,6 +21,25 @@
         }
       ],
       "group": "build"
+    },
+    {
+      "type": "npm",
+      "script": "prd",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "never"
+      },
+      "problemMatcher": [
+        {
+          "base": "$tsc",
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "Build start",
+            "endsPattern": "Build success"
+          }
+        }
+      ],
+      "group": "build"
     }
   ]
 }
