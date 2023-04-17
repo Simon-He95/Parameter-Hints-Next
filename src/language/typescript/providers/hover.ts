@@ -28,7 +28,7 @@ export async function hoverProvider(editor: any, node: any, positionOf: any) {
       preparse = preparse.replace(/^\(method\) /, '')
 
     const replacethreepoint = '__点点点__'
-    preparse = preparse.replace(/<(.*?)>(,|\)|\s*\|)/g, '$2')
+    preparse = preparse
       .replace(/\w+<...>/g, (v: string) => v.replace(/\.\.\./g, replacethreepoint))
       .replace(/_[^:]+:\s*\w+[;]/g, '') // 过滤私有属性
       .replace(/{[\n\s]*\[Symbol\.((replace)|(match))\][^;]+;\n}/, 'String | RegExp')
@@ -155,7 +155,8 @@ function getType(e: any) {
   if (e.elementType && e.elementType.typeName)
     result = e.elementType.typeName.escapedText
   else if (e.typeName)
-    result = e.typeName.escapedText
+    result = text
+    // result = e.typeName.escapedText
   else if (e.kind === ts.SyntaxKind.FunctionType)
     result = 'Function'
   // else if (e.kind === ts.SyntaxKind.TypeLiteral)
