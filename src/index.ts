@@ -105,11 +105,11 @@ export function activate(context: vscode.ExtensionContext) {
       trigger('text edited', activeEditor, false, 300)
   }))
 
-  // context.subscriptions.push(vscode.window.onDidChangeTextEditorVisibleRanges((event) => {
-  //   activeEditor = event.textEditor
-  //   if (activeEditor)
-  //     trigger('scroll', activeEditor, false, 100)
-  // }))
+  context.subscriptions.push(vscode.window.onDidChangeTextEditorVisibleRanges((event) => {
+    activeEditor = event.textEditor
+    if (activeEditor)
+      trigger('scroll', activeEditor, false, 100)
+  }))
 }
 
 // this method is called when your extension is deactivated

@@ -35,6 +35,7 @@
     "onStartupFinished"
   ],
   "contributes": {
+    "hoverProvider": false,
     "commands": [
       {
         "command": "parameterHints.toggle",
