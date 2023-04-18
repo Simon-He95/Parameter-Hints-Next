@@ -41,13 +41,13 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   const runnerMap: any = {
-    php: (editor: any) => runner(phpRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.Unknown }),
-    typescript: (editor: any) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS }),
-    typescriptreact: (editor: any) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TSX }),
-    javascript: (editor: any) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.JS }),
-    javascriptreact: (editor: any) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.JSX }),
-    vue: (editor: any) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS }),
-    svelte: (editor: any) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS }),
+    php: (editor: any, languageType: string) => runner(phpRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.Unknown, languageType }),
+    typescript: (editor: any, languageType: string) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS, languageType }),
+    typescriptreact: (editor: any, languageType: string) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TSX, languageType }),
+    javascript: (editor: any, languageType: string) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.JS, languageType }),
+    javascriptreact: (editor: any, languageType: string) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.JSX, languageType }),
+    vue: (editor: any, languageType: string) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS, languageType }),
+    svelte: (editor: any, languageType: string) => runner(typescriptRunner, editor, showHints, cacheMap, { language: ts.ScriptKind.TS, languageType }),
   }
   const clear = (editor: any) => {
     if (timeout)
@@ -74,7 +74,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       const run = runnerMap[languageId]
       if (run)
-        run(editor)
+        run(editor, languageId)
     }, time)
   }
 

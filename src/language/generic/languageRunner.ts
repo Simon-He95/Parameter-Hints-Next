@@ -2,11 +2,14 @@ import { getPositionOfFrom } from '../../lib/getPositionOfFrom'
 import { promiseList } from '../../lib/promiseList'
 import { HintList } from './hintList'
 
-export async function languageRunner(state: any, pipeline: any, editor: any, parser: any, after: any, providers: any, cacheMap: any, parserOptions = {}) {
-  const text = editor.document.getText()
+export async function languageRunner(state: any, pipeline: any, editor: any, parser: any, after: any, providers: any, cacheMap: any, parserOptions: any = {}) {
+  let text = editor.document.getText()
   const positionOf = getPositionOfFrom(editor)
+  if (parserOptions.languageType === 'vue') {
+    // 只处理script的类型
+    text = text.replace(/(<script.*<\/script>)/gs, '$1')
+  }
   const nodes = parser(text, parserOptions)
-
   const runner = async () => {
     const hintList = new HintList(positionOf, editor)
     const promises = promiseList()
