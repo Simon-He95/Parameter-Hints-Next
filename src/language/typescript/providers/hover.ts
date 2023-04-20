@@ -114,7 +114,7 @@ export async function hoverProvider(editor: any, node: any, positionOf: any) {
           label = label.name.escapedText
         }
         if (variadic) {
-          const match = label.match(/([\w,\(\)\|\s\<\>\[\]]+)(\[\])(.*)/)
+          const match = label.match(/([\{\}.\w,\(\)\|\s\<\>\[\]]+)(\[\])(.*)/)
           if (match)
             variadicLabel = match[1].replace(/^\s*?\((.*)\)$/, '$1') + match[3]
           else
