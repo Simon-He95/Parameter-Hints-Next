@@ -39,7 +39,7 @@ export async function hoverProvider(editor: any, node: any, positionOf: any) {
     const statement = parsed.statements[0]
     if (statement.kind === ts.SyntaxKind.VariableStatement) {
       // VariableStatement
-      const match = preparse.match(/:([\s\n\w\{\}\?;\:\<\>\[\]\|,\(\)=\."'_\\\?\$\u4E00-\u9FA5]*)/)
+      const match = preparse.match(/:([!\s\n\w\{\}\?;\:\<\>\[\]\|,\(\)=\."'_\\\?\$\u4E00-\u9FA5]*)/)
       if (!match)
         return false
       // 将() =>xx 简化成Function
