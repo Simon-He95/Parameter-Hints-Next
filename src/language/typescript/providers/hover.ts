@@ -46,7 +46,12 @@ export async function hoverProvider(editor: any, node: any, positionOf: any) {
       const label = `:${match[1]
         .replace(/\s*\n\s*/g, '')
         .trim()
-        .replace(/;}/g, '}').replaceAll(replacethreepoint, '...')}`
+        .replace(/;}/g, '}').replaceAll(replacethreepoint, '...')
+        .replace(/Record<...>/g, 'Object')
+        .replace(/ \| ((null)|(undefined))/g, '')}`
+      // any 就不高亮了
+      if (label === ':any')
+        return false
       return [
         {
           label,
@@ -125,7 +130,11 @@ export async function hoverProvider(editor: any, node: any, positionOf: any) {
       }
       if (label) {
         params.push({
-          label: `${label.trim().replaceAll(replacethreepoint, '...').replace(/;}/g, '}')}:`,
+          label: `${label.trim()
+            .replaceAll(replacethreepoint, '...')
+            .replace(/;}/g, '}')
+            .replace(/Record<...>/g, 'Object')
+            .replace(/ \| ((null)|(undefined))/g, '')}:`,
           start: node.arguments[i].getStart(),
           end: node.arguments[i].getEnd(),
         })
@@ -156,7 +165,7 @@ function getType(e: any) {
     result = e.elementType.typeName.escapedText
   else if (e.typeName)
     result = text
-    // result = e.typeName.escapedText
+  // result = e.typeName.escapedText
   else if (e.kind === ts.SyntaxKind.FunctionType)
     result = 'Function'
   // else if (e.kind === ts.SyntaxKind.TypeLiteral)
