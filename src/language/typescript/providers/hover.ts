@@ -6,6 +6,7 @@ export async function hoverProvider(editor: any, node: any, positionOf: any) {
   const nodePosition = positionOf(node.start)
   const hoverCommand: any = await executeHoverProvider(editor, nodePosition)
   const command = hoverCommand[0]
+  const maxLength = 50
   if (command && command.contents && command.contents.length > 0) {
     // get typescript type
     const mode = vscode.workspace.getConfiguration('parameterHints').get('hintingType')
@@ -35,6 +36,8 @@ export async function hoverProvider(editor: any, node: any, positionOf: any) {
       .replace(/\[Symbol\.[^:]+:\s*\w+[;]/g, '') // 过滤[Symbol.iterator]
       .replace(/[\&\|]\s*{[\n\s]*}/g, '') // 过滤空的{}
       .replace(/[\s\n]*([{}])[\n\s]*/g, '$1')
+      .replace(/\n/g, '')
+      .replace(/\s+/g, ' ')
     const parsed = ts.createSourceFile('inline.ts', preparse, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
     const statement = parsed.statements[0]
     if (statement.kind === ts.SyntaxKind.VariableStatement) {
@@ -43,7 +46,7 @@ export async function hoverProvider(editor: any, node: any, positionOf: any) {
       if (!match)
         return false
       // 将() =>xx 简化成Function
-      const label = `:${match[1]
+      let label = `:${match[1]
         .replace(/\s*\n\s*/g, '')
         .trim()
         .replace(/;}/g, '}').replaceAll(replacethreepoint, '...')
@@ -52,6 +55,8 @@ export async function hoverProvider(editor: any, node: any, positionOf: any) {
       // any 就不高亮了
       if (label === ':any')
         return false
+      label = label.length > maxLength ? `${label.substring(0, maxLength)}...` : label
+
       return [
         {
           label,
@@ -119,7 +124,7 @@ export async function hoverProvider(editor: any, node: any, positionOf: any) {
           label = label.name.escapedText
         }
         if (variadic) {
-          const match = label.match(/([\{\}.\w,\(\)\|\s\<\>\[\]]+)(\[\])(.*)/)
+          const match = label.match(/([\{\}.;:\w,\(\)\|\s\<\>\[\]]+)(\[\])(.*)/)
           if (match)
             variadicLabel = match[1].replace(/^\s*?\((.*)\)$/, '$1') + match[3]
           else
@@ -129,6 +134,7 @@ export async function hoverProvider(editor: any, node: any, positionOf: any) {
         }
       }
       if (label) {
+        label = label.length > maxLength ? `${label.substring(0, maxLength)}...` : label
         params.push({
           label: `${label.trim()
             .replaceAll(replacethreepoint, '...')
