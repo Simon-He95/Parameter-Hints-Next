@@ -134,7 +134,7 @@ export async function hoverProvider(editor: any, node: any, positionOf: any) {
         }
       }
       if (label) {
-        label = label.length > maxLength ? `${label.substring(0, maxLength)}..."` : label
+        label = label.length > maxLength ? `${label.substring(0, maxLength)}...` : label
         params.push({
           label: `${label.trim()
             .replaceAll(replacethreepoint, '...')
